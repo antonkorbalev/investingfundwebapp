@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using InvestingApp.Models;
 using System.Collections.Generic;
 using InvestingApp.Database.Entities;
+using System.Linq;
 
 namespace ModuleTests
 {
@@ -10,60 +11,79 @@ namespace ModuleTests
     public class BaseTests
     {
 
-        private GeneralInvestingInfo getInvestingInfo()
+        private GeneralInvestingInfo getInvestingInfo(bool withFlows)
         {
-            var data = new GeneralInvestingInfo();
-            data.Data = new[]
+            var data = new[]
             {
                 new BalancesRow()
                 {
-                    Balance = 10,
-                    DateTimeStamp = new DateTime(1)
+                    Balance = 5,
+                    DateTimeStamp = new DateTime(2017, 12, 30)
                 },
                 new BalancesRow()
                 {
                     Balance = 3,
-                    DateTimeStamp = new DateTime(2)
+                    DateTimeStamp = new DateTime(2018, 1, 5)
                 },
                 new BalancesRow()
                 {
                     Balance = -5,
-                    DateTimeStamp = new DateTime(3)
+                    DateTimeStamp = new DateTime(2018, 1, 10)
                 },
                 new BalancesRow()
                 {
                     Balance = -7,
-                    DateTimeStamp = new DateTime(4)
+                    DateTimeStamp = new DateTime(2018, 1, 20)
                 },
                 new BalancesRow()
                 {
                     Balance = 9,
-                    DateTimeStamp = new DateTime(5)
+                    DateTimeStamp = new DateTime(2018, 2, 15)
                 },
                 new BalancesRow()
                 {
                     Balance = 20,
-                    DateTimeStamp = new DateTime(4)
+                    DateTimeStamp = new DateTime(2018, 2, 27)
                 },
                 new BalancesRow()
                 {
-                    Balance = 17,
-                    DateTimeStamp = new DateTime(5)
+                    Balance = 27,
+                    DateTimeStamp = new DateTime(2018, 3, 1)
                 }
             };
 
-            return data;
+            var flows = withFlows ? new[] {
+                new FlowRow()
+                {
+                    DateTimeStamp = new DateTime(2017, 12, 30),
+                    Payment = 5
+                },
+                new FlowRow()
+                {
+                    DateTimeStamp = new DateTime(2018, 1, 10),
+                    Payment = -3
+                },
+                new FlowRow()
+                {
+                    DateTimeStamp = new DateTime(2018, 2, 15),
+                    Payment = 10
+                },
+            } : null;
+
+            var ret = new GeneralInvestingInfo(data, flows);
+
+            return ret;
         }
 
         [TestMethod]
         public void CheckGeneralProfit()
         {
-            var data = getInvestingInfo();
-            Assert.AreEqual(data.Profit, 7);
-            Assert.AreEqual(data.ProfitPercent, 70);
-            Assert.AreEqual(data.Max, 20);
+            var data = getInvestingInfo(false);
+            Assert.AreEqual(data.Profit, 22);
+            Assert.AreEqual(data.ProfitPercent, 440);
+            Assert.AreEqual(data.Max, 27);
             Assert.AreEqual(data.Min, -7);
-            Assert.AreEqual(data.DrawDown, 17);    
+            Assert.AreEqual(data.DrawDown, 12);    
         }
 
         [TestMethod]
@@ -72,8 +92,34 @@ namespace ModuleTests
             var data = new List<BalancesRow>();
             for (var i = 0; i < 1000; i++)
                 data.Add(new BalancesRow() { Balance = i % 2 == 0 ? i : -i });
-            var info = new GeneralInvestingInfo() { Data = data };
+            var info = new GeneralInvestingInfo(data, null);
             Assert.AreEqual(info.DrawDown, 1997);
+        }
+
+        [TestMethod]
+        public void CheckProfitsWithFlows()
+        {
+            var data = getInvestingInfo(true);
+            Assert.AreEqual(data.Profit, 7);
+            Assert.AreEqual(data.ProfitPercent, 35);
+        }
+
+        [TestMethod]
+        public void CheckProfitWithFlowsForLastMonth()
+        {
+            var data = getInvestingInfo(true);
+            Assert.AreEqual(data.LastMonthProfit, 8);
+            Assert.AreEqual(data.LastMonthProfitPercent, 36.84);
+        }
+
+        [TestMethod]
+        public void CheckProfitsPerMonthDistr()
+        {
+            var data = getInvestingInfo(true);
+            var profits = data.ProfitsPerMonth.Select(o => o.Value).ToArray();
+            var percents = data.ProfitsPerMonth.Select(o => o.Percent).ToArray();
+            Assert.IsTrue(profits.SequenceEqual(new double[] { -5, -7, 1 }));
+            Assert.IsTrue(percents.SequenceEqual(new double[] { -50, 0, 5.26 }));
         }
     }
 }

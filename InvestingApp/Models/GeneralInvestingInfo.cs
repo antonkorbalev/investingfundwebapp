@@ -9,7 +9,56 @@ namespace InvestingApp.Models
 {
     public class GeneralInvestingInfo
     {
-        public IEnumerable<BalancesRow> Data { get; set; }
+
+        private double getStartBalance(long fromTicks = 0, long toTicks = long.MaxValue)
+        {
+            var dataBalance = Data.Where(o => o.DateTimeStamp.Ticks >= fromTicks).First().Balance;
+            return (Flows != null && Flows.Any()) ?
+                Flows.Where(o => o.DateTimeStamp.Ticks >= fromTicks && o.DateTimeStamp.Ticks <= toTicks)
+                .Sum(o => o.Payment) + dataBalance
+                : dataBalance;
+        }
+
+        public GeneralInvestingInfo(IEnumerable<BalancesRow> data, IEnumerable<FlowRow> flows)
+        {
+            Data = data;
+            Flows = flows;
+            updateProfitsPerMonth();
+        }
+
+        private void updateProfitsPerMonth()
+        {
+            var start = Data.First().DateTimeStamp;
+            var distr = new List<ProfitPerPeriod>();
+
+            while (start < Data.Last().DateTimeStamp)
+            {
+                var stop = Data.Last(o => o.DateTimeStamp >= start && o.DateTimeStamp.Month == start.Month);
+                var currProfit = stop.Balance - getStartBalance(start.Ticks, stop.DateTimeStamp.Ticks);
+                var startBal = getStartBalance(start.Ticks, stop.DateTimeStamp.Ticks);
+                var bal = getStartBalance(start.Ticks, stop.DateTimeStamp.Ticks);
+                distr.Add(
+                    new ProfitPerPeriod(stop.DateTimeStamp.ToString("MMMM yy"),
+                    currProfit,
+                    startBal != 0 ?  Math.Round(100 * currProfit / startBal, 2) : 0
+                    ));
+                start = Data.First(o => o.DateTimeStamp > stop.DateTimeStamp).DateTimeStamp;
+            }
+
+            ProfitsPerMonth = distr.ToArray();
+        }
+
+        public ProfitPerPeriod[] ProfitsPerMonth { get; private set; }
+
+        /// <summary>
+        /// Balances rows
+        /// </summary>
+        public IEnumerable<BalancesRow> Data { get; private set; }
+        
+        /// <summary>
+        /// Flows rows
+        /// </summary>
+        public IEnumerable<FlowRow> Flows { get; private set; }
 
         /// <summary>
         /// Total profit
@@ -18,7 +67,7 @@ namespace InvestingApp.Models
         {
             get
             {
-                return Data.Last().Balance - Data.First().Balance;
+                return Data.Last().Balance - getStartBalance();
             }
         }
 
@@ -29,7 +78,7 @@ namespace InvestingApp.Models
         {
             get
             {
-                return Math.Round(100 * Profit / Data.First().Balance ,2);
+                return Math.Round(100 * Profit / getStartBalance(), 2);
             }
         }
 
@@ -67,6 +116,28 @@ namespace InvestingApp.Models
                     let prevs = Data.TakeWhile(o => o != d)
                     let max = prevs.Any() ? prevs.Max(o => o.Balance) : 0
                     select (max - d.Balance)).Max();
+            }
+        }
+
+        /// <summary>
+        /// Last Month Profit
+        /// </summary>
+        public double LastMonthProfit
+        {
+            get
+            {
+                return Data.Last().Balance - getStartBalance(Data.Max(o => o.DateTimeStamp).AddMonths(-1).Ticks);
+            }
+        }
+
+        /// <summary>
+        /// Last month profit percent
+        /// </summary>
+        public double LastMonthProfitPercent
+        {
+            get
+            {
+                return Math.Round(100 * Profit / getStartBalance(Data.Max(o => o.DateTimeStamp).AddMonths(-1).Ticks), 2);
             }
         }
     }

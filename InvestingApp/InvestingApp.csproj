@@ -209,11 +209,13 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MessageController.cs" />
     <Compile Include="Database\Entities\BalancesRow.cs" />
+    <Compile Include="Database\Entities\FlowRow.cs" />
     <Compile Include="Database\InvestingContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\GeneralInvestingInfo.cs" />
+    <Compile Include="Models\ProfitPerPeroid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
