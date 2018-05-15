@@ -50,6 +50,7 @@ namespace InvestingApp.Models
             ProfitsPerMonth = distr.ToArray();
         }
 
+
         public ProfitPerPeriod[] ProfitsPerMonth { get; private set; }
 
         /// <summary>

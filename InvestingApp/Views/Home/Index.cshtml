@@ -1,8 +1,49 @@
 ﻿@model InvestingApp.Models.GeneralInvestingInfo
+@using System.Globalization;
+
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@{ 
+    var xs = new MvcHtmlString(string.Join(",", Model.Data.Select(o => string.Format("'{0}'",o.DateTimeStamp.ToShortDateString()))));
+    var ys = new MvcHtmlString(string.Join(",", Model.Data.Select(o => o.Balance.ToString("0.00", CultureInfo.InvariantCulture))));
+}
 
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
 
+      function drawChart() {
+          var xs = [@xs];
+          var ys = [@ys];
+          
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'Date');
+          data.addColumn('number', 'Balances');
+          for (i = 0; i < xs.length; i++) {
+              data.addRow([xs[i].toString(), ys[i]]);
+          }
+          var options = {
+              title: 'Balances',
+              curveType: 'function',
+              legend: { position: 'bottom' }
+          };
 
+          var chart = new google.visualization.LineChart(document.getElementById('balances_chart'));
+
+          chart.draw(data, options);
+      }
+</script>
+
+<table>
+    <tr>
+        <td>
+            <p>We use various financial instruments to get effective investing profit</p>
+        </td>
+        <td>
+            <div id="balances_chart" style="width: 500px; height: 250px"></div>
+        </td>
+    </tr>
+</table>
