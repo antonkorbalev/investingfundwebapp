@@ -210,16 +210,34 @@
     <Compile Include="Controllers\MessageController.cs" />
     <Compile Include="Database\Entities\BalancesRow.cs" />
     <Compile Include="Database\Entities\FlowRow.cs" />
+    <Compile Include="Database\Entities\User.cs" />
     <Compile Include="Database\InvestingContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805150819471_InitialCreate.cs" />
+    <Compile Include="Migrations\201805150819471_InitialCreate.Designer.cs">
+      <DependentUpon>201805150819471_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805150857092_DescriptionMigration.cs" />
+    <Compile Include="Migrations\201805150857092_DescriptionMigration.Designer.cs">
+      <DependentUpon>201805150857092_DescriptionMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\GeneralInvestingInfo.cs" />
     <Compile Include="Models\ProfitPerPeroid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201805150819471_InitialCreate.resx">
+      <DependentUpon>201805150819471_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805150857092_DescriptionMigration.resx">
+      <DependentUpon>201805150857092_DescriptionMigration.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

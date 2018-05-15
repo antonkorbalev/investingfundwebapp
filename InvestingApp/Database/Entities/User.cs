@@ -7,16 +7,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InvestingApp.Database.Entities
 {
-    public class FlowRow
+    public class User
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        public string Name { get; set; }
         [Required]
-        public User User { get; set; }
+        public string Login { get; set; }
         [Required]
-        public DateTime DateTimeStamp { get; set; }
+        public string Password { get; set; }
         [Required]
-        public double Payment { get; set; }
-        public string Description { get; set; }
+        public double SharedRatio{ get; set; }
     }
 }

@@ -31,7 +31,7 @@ namespace InvestingApp.Models
             var start = Data.First().DateTimeStamp;
             var distr = new List<ProfitPerPeriod>();
 
-            while (start < Data.Last().DateTimeStamp)
+            while (true)
             {
                 var stop = Data.Last(o => o.DateTimeStamp >= start && o.DateTimeStamp.Month == start.Month);
                 var currProfit = stop.Balance - getStartBalance(start.Ticks, stop.DateTimeStamp.Ticks);
@@ -42,7 +42,9 @@ namespace InvestingApp.Models
                     currProfit,
                     startBal != 0 ?  Math.Round(100 * currProfit / startBal, 2) : 0
                     ));
-                start = Data.First(o => o.DateTimeStamp > stop.DateTimeStamp).DateTimeStamp;
+                if (Data.Any(o => o.DateTimeStamp > stop.DateTimeStamp))
+                    start = Data.First(o => o.DateTimeStamp > stop.DateTimeStamp).DateTimeStamp;
+                else break;
             }
 
             ProfitsPerMonth = distr.ToArray();

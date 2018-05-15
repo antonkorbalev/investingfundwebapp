@@ -10,7 +10,7 @@ namespace InvestingApp.Database
     {
         public DbSet<Entities.BalancesRow> Balances { get; set; }
         public DbSet<Entities.FlowRow> Flows { get; set; }
-
+        public DbSet<Entities.User> Users { get; set; }
         public InvestingContext() : base("cstr")
         {
 
