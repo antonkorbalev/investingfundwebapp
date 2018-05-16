@@ -92,12 +92,28 @@
                 <div class="panel-body">
                    @{ 
                        var totalDays = (Model.Data.Last().DateTimeStamp - Model.Data.First().DateTimeStamp).TotalDays;
-                       var profitClass = Model.Profit > 0 ? "success" : "danger";
-                       var lastMonthProfitCalss = Model.LastMonthProfit > 0 ? "success" : "danger";
                    } 
                     <p class="text-muted">Total days: <b> @totalDays </b></p>
-                    <p class="text-@profitClass">Total profit: @Model.Profit RUB (@Model.ProfitPercent %)</p>
-                    <p class="text-@lastMonthProfitCalss">Month profit: @Model.LastMonthProfit RUB (@Model.LastMonthProfitPercent %)</p>
+                    @if (Model.Profit > 0)
+                    {
+                        @: <p class="text-success">
+                    }
+                    else
+                    {
+                        @: <p class="text-danger">
+                    }
+                    Total profit: @Model.Profit RUB (@Model.ProfitPercent %)
+                    </p>
+                    @if (Model.LastMonthProfit > 0)
+                    {
+                        @: <p class="text-success">
+                    }
+                    else
+                    {
+                        @: <p class="text-danger">
+                    }
+                    Month profit: @Model.LastMonthProfit RUB (@Model.LastMonthProfitPercent %)
+                </p>
                 </div>
             </div>
             <div class="panel panel-info">
