@@ -95,31 +95,5 @@ namespace ModuleTests
             var info = new GeneralInvestingInfo(data, null);
             Assert.AreEqual(info.DrawDown, 1997);
         }
-
-        [TestMethod]
-        public void CheckProfitsWithFlows()
-        {
-            var data = getInvestingInfo(true);
-            Assert.AreEqual(data.Profit, 10);
-            Assert.AreEqual(data.ProfitPercent, 58.82);
-        }
-
-        [TestMethod]
-        public void CheckProfitWithFlowsForLastMonth()
-        {
-            var data = getInvestingInfo(true);
-            Assert.AreEqual(data.LastMonthProfit, 8);
-            Assert.AreEqual(data.LastMonthProfitPercent, 52.63);
-        }
-
-        [TestMethod]
-        public void CheckProfitsPerMonthDistr()
-        {
-            var data = getInvestingInfo(true);
-            var profits = data.ProfitsPerMonth.Select(o => o.Value).ToArray();
-            var percents = data.ProfitsPerMonth.Select(o => o.Percent).ToArray();
-            Assert.IsTrue(profits.SequenceEqual(new double[] { -5, -7, 1, 0 }));
-            Assert.IsTrue(percents.SequenceEqual(new double[] { -50, 0, 5.26, 0 }));
-        }
     }
 }

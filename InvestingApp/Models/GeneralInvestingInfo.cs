@@ -4,20 +4,12 @@ using System.Linq;
 using System.Web;
 using InvestingApp.Database;
 using InvestingApp.Database.Entities;
+using System.Globalization;
 
 namespace InvestingApp.Models
 {
     public class GeneralInvestingInfo
     {
-
-        private double getStartBalance(long fromTicks = 0, long toTicks = long.MaxValue)
-        {
-            var dataBalance = Data.Where(o => o.DateTimeStamp.Ticks >= fromTicks).First().Balance;
-            return (Flows != null && Flows.Any()) ?
-                Flows.Where(o => o.DateTimeStamp.Ticks >= fromTicks && o.DateTimeStamp.Ticks <= toTicks)
-                .Sum(o => o.Payment) + dataBalance
-                : dataBalance;
-        }
 
         public GeneralInvestingInfo(IEnumerable<BalancesRow> data, IEnumerable<FlowRow> flows)
         {
@@ -34,11 +26,10 @@ namespace InvestingApp.Models
             while (true)
             {
                 var stop = Data.Last(o => o.DateTimeStamp >= start && o.DateTimeStamp.Month == start.Month);
-                var currProfit = stop.Balance - getStartBalance(start.Ticks, stop.DateTimeStamp.Ticks);
-                var startBal = getStartBalance(start.Ticks, stop.DateTimeStamp.Ticks);
-                var bal = getStartBalance(start.Ticks, stop.DateTimeStamp.Ticks);
+                var startBal = Data.First(o => o.DateTimeStamp == start).Balance;
+                var currProfit = stop.Balance - startBal;
                 distr.Add(
-                    new ProfitPerPeriod(stop.DateTimeStamp.ToString("MMMM yy"),
+                    new ProfitPerPeriod(stop.DateTimeStamp.ToString("MMM yy", CultureInfo.InvariantCulture ),
                     currProfit,
                     startBal != 0 ?  Math.Round(100 * currProfit / startBal, 2) : 0
                     ));
@@ -70,7 +61,7 @@ namespace InvestingApp.Models
         {
             get
             {
-                return Data.Last().Balance - getStartBalance();
+                return Data.Last().Balance - Data.First().Balance;
             }
         }
 
@@ -81,7 +72,7 @@ namespace InvestingApp.Models
         {
             get
             {
-                return Math.Round(100 * Profit / getStartBalance(), 2);
+                return Math.Round(100 * Profit / Data.First().Balance, 2);
             }
         }
 
@@ -129,7 +120,8 @@ namespace InvestingApp.Models
         {
             get
             {
-                return Data.Last().Balance - getStartBalance(Data.Max(o => o.DateTimeStamp).AddMonths(-1).Ticks);
+                var today = Data.Last().DateTimeStamp;
+                return Data.Last().Balance - Data.First(o => o.DateTimeStamp.Year == today.Year && o.DateTimeStamp.Month == today.Month).Balance;
             }
         }
 
@@ -140,7 +132,8 @@ namespace InvestingApp.Models
         {
             get
             {
-                return Math.Round(100 * Profit / getStartBalance(Data.Max(o => o.DateTimeStamp).AddMonths(-1).Ticks), 2);
+                var today = Data.Last().DateTimeStamp;
+                return Math.Round(100 * LastMonthProfit / Data.First(o => o.DateTimeStamp.Year == today.Year && o.DateTimeStamp.Month == today.Month).Balance, 2);
             }
         }
     }

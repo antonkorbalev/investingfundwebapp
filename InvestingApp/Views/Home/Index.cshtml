@@ -6,44 +6,152 @@
 }
 
 @{ 
-    var xs = new MvcHtmlString(string.Join(",", Model.Data.Select(o => string.Format("'{0}'",o.DateTimeStamp.ToShortDateString()))));
-    var ys = new MvcHtmlString(string.Join(",", Model.Data.Select(o => o.Balance.ToString("0.00", CultureInfo.InvariantCulture))));
+    var ticksCount = Model.Data.Count() / 4;
 }
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
       google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
+      google.charts.setOnLoadCallback(drawCharts);
 
-      function drawChart() {
-          var xs = [@xs];
-          var ys = [@ys];
-          
+      function drawCharts() {
+          drawBalancesChart();
+          drawProfitsChart();
+      }
+
+      function drawBalancesChart() {
+          @{ 
+              var bxs = new MvcHtmlString(string.Join(",", Model.Data.Select(o => string.Format("'{0}'", o.DateTimeStamp.ToString("MMM d yyyy", CultureInfo.InvariantCulture)))));
+              var bys = new MvcHtmlString(string.Join(",", Model.Data.Select(o => o.Balance.ToString("0.00", CultureInfo.InvariantCulture))));
+          }
+          var xs = [@bxs];
+          var ys = [@bys];
+
           var data = new google.visualization.DataTable();
           data.addColumn('string', 'Date');
-          data.addColumn('number', 'Balances');
+          data.addColumn('number', 'Balances, RUB');
           for (i = 0; i < xs.length; i++) {
               data.addRow([xs[i].toString(), ys[i]]);
           }
           var options = {
-              title: 'Balances',
+              title: 'Total funds',
               curveType: 'function',
-              legend: { position: 'bottom' }
+              legend: { position: 'bottom' },
+              hAxis: { showTextEvery: @ticksCount }
           };
 
           var chart = new google.visualization.LineChart(document.getElementById('balances_chart'));
 
           chart.draw(data, options);
       }
+    function drawProfitsChart() {
+        @{ 
+            var pxs = new MvcHtmlString(string.Join(",", Model.ProfitsPerMonth.Select(o => string.Format("'{0}'", o.Description))));
+            var py1s = new MvcHtmlString(string.Join(",", Model.ProfitsPerMonth.Select(o => o.Value.ToString("0.00", CultureInfo.InvariantCulture))));
+            var py2s = new MvcHtmlString(string.Join(",", Model.ProfitsPerMonth.Select(o => o.Percent.ToString("0.00", CultureInfo.InvariantCulture))));
+        }
+         var xs = [@pxs];
+         var y1s = [@py1s];
+         var y2s = [@py2s];
+
+         var data = new google.visualization.DataTable();
+         data.addColumn('string', 'Month');
+         data.addColumn('number', 'Profit, RUB');
+         data.addColumn('number', 'Profit, %');
+
+         for (i = 0; i < xs.length; i++) {
+             data.addRow([xs[i].toString(), y1s[i], y2s[i]]);
+         }
+         var options = {
+             title: 'Profits per month',
+             curveType: 'function',
+             legend: { position: 'bottom' },
+             vAxes: {0: {
+                 gridlines: {color: 'transparent'},
+             },
+                 1: {
+                     gridlines: {color: 'transparent'},
+                     format:'# \'%\''},
+             },
+             series: {0: {targetAxisIndex:0},
+                 1:{targetAxisIndex:1},
+             },
+         };
+
+         var chart = new google.visualization.ColumnChart(document.getElementById('profits_per_month_chart'));
+
+         chart.draw(data, options);
+    }
 </script>
 
 <table>
     <tr>
-        <td>
-            <p>We use various financial instruments to get effective investing profit</p>
+        <td rowspan="2">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Profits</div>
+                <div class="panel-body">
+                   @{ 
+                       var totalDays = (Model.Data.Last().DateTimeStamp - Model.Data.First().DateTimeStamp).TotalDays;
+                       var profitClass = Model.Profit > 0 ? "success" : "danger";
+                       var lastMonthProfitCalss = Model.LastMonthProfit > 0 ? "success" : "danger";
+                   } 
+                    <p class="text-muted">Total days: <b> @totalDays </b></p>
+                    <p class="text-@profitClass">Total profit: @Model.Profit RUB (@Model.ProfitPercent %)</p>
+                    <p class="text-@lastMonthProfitCalss">Month profit: @Model.LastMonthProfit RUB (@Model.LastMonthProfitPercent %)</p>
+                </div>
+            </div>
+            <div class="panel panel-info">
+                <div class="panel-heading">Analysis</div>
+                <div class="panel-body">
+                    <p class="text-info">Max: @Model.Max RUB</p>
+                    <p class="text-info">Min: @Model.Min RUB</p>
+                    <p class="text-danger">Drawdown: @Model.DrawDown RUB</p>
+                </div>
+            </div>
         </td>
         <td>
-            <div id="balances_chart" style="width: 500px; height: 250px"></div>
+            <div id="balances_chart" style="width: 400px; height: 200px"></div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div id="profits_per_month_chart" style="width: 400px; height: 200px"></div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <div class="panel panel-warning">
+                <div class="panel-heading">Cash flow</div>
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Payment</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var flow in Model.Flows)
+                            {
+                                
+                                if (flow.Payment > 0)
+                                {
+                                    @: <tr class="success">
+                                }
+                                else
+                                {
+                                    @: <tr class="danger">
+                                }
+                                    <td>@flow.DateTimeStamp.ToString("MMM d yyyy", CultureInfo.InvariantCulture)</td>
+                                    <td><b>@flow.Payment RUB</td>
+                                    <td>@flow.Description</td>
+                                @: </tr>
+                            } 
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </td>
     </tr>
 </table>
