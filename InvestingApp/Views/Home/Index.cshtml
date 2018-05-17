@@ -20,24 +20,27 @@
       }
 
       function drawBalancesChart() {
-          @{ 
+          @{
               var bxs = new MvcHtmlString(string.Join(",", Model.Data.Select(o => string.Format("'{0}'", o.DateTimeStamp.ToString("MMM d yyyy", CultureInfo.InvariantCulture)))));
-              var bys = new MvcHtmlString(string.Join(",", Model.Data.Select(o => o.Balance.ToString("0.00", CultureInfo.InvariantCulture))));
+              var by1s = new MvcHtmlString(string.Join(",", Model.Data.Select(o => o.Balance.ToString("0.00", CultureInfo.InvariantCulture))));
+              var by2s = new MvcHtmlString(string.Join(",", Model.Profits.Select(o => o.Value.ToString("0.00", CultureInfo.InvariantCulture))));
           }
           var xs = [@bxs];
-          var ys = [@bys];
+          var y1s = [@by1s];
+          var y2s = [@by2s];
 
           var data = new google.visualization.DataTable();
           data.addColumn('string', 'Date');
           data.addColumn('number', 'Balances, RUB');
+          data.addColumn('number', 'Profit, RUB');
           for (i = 0; i < xs.length; i++) {
-              data.addRow([xs[i].toString(), ys[i]]);
+              data.addRow([xs[i].toString(), y1s[i], y2s[i]]);
           }
           var options = {
-              title: 'Total funds',
+              title: 'Total funds and profit',
               curveType: 'function',
               legend: { position: 'bottom' },
-              hAxis: { showTextEvery: @ticksCount }
+              hAxis: { showTextEvery: @ticksCount },
           };
 
           var chart = new google.visualization.LineChart(document.getElementById('balances_chart'));
@@ -45,7 +48,7 @@
           chart.draw(data, options);
       }
     function drawProfitsChart() {
-        @{ 
+        @{
             var pxs = new MvcHtmlString(string.Join(",", Model.ProfitsPerMonth.Select(o => string.Format("'{0}'", o.Description))));
             var py1s = new MvcHtmlString(string.Join(",", Model.ProfitsPerMonth.Select(o => o.Value.ToString("0.00", CultureInfo.InvariantCulture))));
             var py2s = new MvcHtmlString(string.Join(",", Model.ProfitsPerMonth.Select(o => o.Percent.ToString("0.00", CultureInfo.InvariantCulture))));
@@ -117,7 +120,7 @@
                 </div>
             </div>
             <div class="panel panel-info">
-                <div class="panel-heading">Analysis</div>
+                <div class="panel-heading">Balance analysis</div>
                 <div class="panel-body">
                     <p class="text-info">Max: @Model.Max RUB</p>
                     <p class="text-info">Min: @Model.Min RUB</p>
@@ -126,12 +129,12 @@
             </div>
         </td>
         <td>
-            <div id="balances_chart" style="width: 400px; height: 200px"></div>
+            <div id="balances_chart" style="width: 500px; height: 200px"></div>
         </td>
     </tr>
     <tr>
         <td>
-            <div id="profits_per_month_chart" style="width: 400px; height: 200px"></div>
+            <div id="profits_per_month_chart" style="width: 500px; height: 200px"></div>
         </td>
     </tr>
     <tr>

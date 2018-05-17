@@ -11,7 +11,7 @@ namespace ModuleTests
     public class BaseTests
     {
 
-        private GeneralInvestingInfo getInvestingInfo(bool withFlows)
+        private GeneralInvestingInfo getInvestingInfo()
         {
             var data = new[]
             {
@@ -52,7 +52,7 @@ namespace ModuleTests
                 }
             };
 
-            var flows = withFlows ? new[] {
+            var flows = new[] {
                 new FlowRow()
                 {
                     DateTimeStamp = new DateTime(2017, 12, 30),
@@ -68,7 +68,7 @@ namespace ModuleTests
                     DateTimeStamp = new DateTime(2018, 2, 15),
                     Payment = 10
                 },
-            } : null;
+            };
 
             var ret = new GeneralInvestingInfo(data, flows);
 
@@ -78,21 +78,22 @@ namespace ModuleTests
         [TestMethod]
         public void CheckGeneralProfit()
         {
-            var data = getInvestingInfo(false);
-            Assert.AreEqual(data.Profit, 22);
-            Assert.AreEqual(data.ProfitPercent, 440);
+            var data = getInvestingInfo();
+            Assert.AreEqual(data.Profit, 15);
+            Assert.AreEqual(data.ProfitPercent, 300);
             Assert.AreEqual(data.Max, 27);
             Assert.AreEqual(data.Min, -7);
-            Assert.AreEqual(data.DrawDown, 12);    
+            Assert.AreEqual(data.DrawDown, 9);    
         }
 
         [TestMethod]
         public void CheckDrawDown()
         {
             var data = new List<BalancesRow>();
+            var flows = new FlowRow[] { };
             for (var i = 0; i < 1000; i++)
-                data.Add(new BalancesRow() { Balance = i % 2 == 0 ? i : -i });
-            var info = new GeneralInvestingInfo(data, null);
+                data.Add(new BalancesRow() { Balance = i % 2 == 0 ? i : -i, DateTimeStamp = new DateTime(i) });
+            var info = new GeneralInvestingInfo(data, flows);
             Assert.AreEqual(info.DrawDown, 1997);
         }
     }

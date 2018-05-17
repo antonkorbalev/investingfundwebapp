@@ -15,32 +15,46 @@ namespace InvestingApp.Models
         {
             Data = data;
             Flows = flows;
+            if ((flows == null)
+                || (Flows.Where(o => o.DateTimeStamp <= data.First().DateTimeStamp)
+                .Sum(o => o.Payment) != data.First().Balance))
+                    throw new InvalidOperationException("Error in database! Flows sum is not equal to initial balance.");
+            Profits = (from d in Data
+                       select
+                       new
+                       {
+                           Balance = d.Balance - (Flows != null ? Flows
+                                 .Where(f => f.DateTimeStamp <= d.DateTimeStamp)
+                                 .Sum(o => o.Payment) : 0),
+                           DateTimeStamp = d.DateTimeStamp
+                       }).ToDictionary(o => o.DateTimeStamp, o => o.Balance);
             updateProfitsPerMonth();
         }
 
         private void updateProfitsPerMonth()
         {
-            var start = Data.First().DateTimeStamp;
+            var start = Profits.Keys.First();
             var distr = new List<ProfitPerPeriod>();
 
             while (true)
             {
-                var stop = Data.Last(o => o.DateTimeStamp >= start && o.DateTimeStamp.Month == start.Month);
-                var startBal = Data.First(o => o.DateTimeStamp == start).Balance;
-                var currProfit = stop.Balance - startBal;
+                var stop = Profits.Last(o => o.Key >= start && o.Key.Month == start.Month);
+                var startBal = Profits.First(o => o.Key == start).Value;
+                var currProfit = stop.Value - startBal;
                 distr.Add(
-                    new ProfitPerPeriod(stop.DateTimeStamp.ToString("MMM yy", CultureInfo.InvariantCulture ),
+                    new ProfitPerPeriod(stop.Key.ToString("MMM yy", CultureInfo.InvariantCulture ),
                     currProfit,
                     startBal != 0 ?  Math.Round(100 * currProfit / startBal, 2) : 0
                     ));
-                if (Data.Any(o => o.DateTimeStamp > stop.DateTimeStamp))
-                    start = Data.First(o => o.DateTimeStamp > stop.DateTimeStamp).DateTimeStamp;
+                if (Data.Any(o => o.DateTimeStamp > stop.Key))
+                    start = Data.First(o => o.DateTimeStamp > stop.Key).DateTimeStamp;
                 else break;
             }
 
             ProfitsPerMonth = distr.ToArray();
         }
 
+        public Dictionary<DateTime, double> Profits { get; set; }
 
         public ProfitPerPeriod[] ProfitsPerMonth { get; private set; }
 
@@ -61,7 +75,7 @@ namespace InvestingApp.Models
         {
             get
             {
-                return Data.Last().Balance - Data.First().Balance;
+                return Profits.Values.Last();
             }
         }
 
@@ -106,10 +120,10 @@ namespace InvestingApp.Models
             get
             {
                 return
-                    (from d in Data
-                    let prevs = Data.TakeWhile(o => o != d)
-                    let max = prevs.Any() ? prevs.Max(o => o.Balance) : 0
-                    select (max - d.Balance)).Max();
+                    (from d in Profits
+                    let prevs = Profits.TakeWhile(o => o.Key != d.Key)
+                    let max = prevs.Any() ? prevs.Max(o => o.Value) : 0
+                    select (max - d.Value)).Max();
             }
         }
 
@@ -120,8 +134,10 @@ namespace InvestingApp.Models
         {
             get
             {
-                var today = Data.Last().DateTimeStamp;
-                return Data.Last().Balance - Data.First(o => o.DateTimeStamp.Year == today.Year && o.DateTimeStamp.Month == today.Month).Balance;
+                var today = Profits.Last().Key;
+                var firstMonthProfitDate = Profits.Keys
+                    .First(o => o.Year == today.Year && o.Month == today.Month);
+                return Profits[today] - Profits[firstMonthProfitDate];
             }
         }
 
@@ -133,7 +149,9 @@ namespace InvestingApp.Models
             get
             {
                 var today = Data.Last().DateTimeStamp;
-                return Math.Round(100 * LastMonthProfit / Data.First(o => o.DateTimeStamp.Year == today.Year && o.DateTimeStamp.Month == today.Month).Balance, 2);
+                var firstMonthProfitDate = Profits.Keys
+                    .First(o => o.Year == today.Year && o.Month == today.Month);
+                return Math.Round(100 * LastMonthProfit / Profits[firstMonthProfitDate], 2);
             }
         }
     }
