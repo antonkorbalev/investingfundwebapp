@@ -44,10 +44,10 @@ namespace InvestingApp.Models
                 distr.Add(
                     new ProfitPerPeriod(stop.Key.ToString("MMM yy", CultureInfo.InvariantCulture ),
                     currProfit,
-                    startBal != 0 ?  Math.Round(100 * currProfit / startBal, 2) : 0
+                    Math.Round(100 * currProfit / Data.First(o => o.DateTimeStamp == start).Balance, 2)
                     ));
-                if (Data.Any(o => o.DateTimeStamp > stop.Key))
-                    start = Data.First(o => o.DateTimeStamp > stop.Key).DateTimeStamp;
+                if (Profits.Any(o => o.Key > stop.Key))
+                    start = Profits.First(o => o.Key > stop.Key).Key;
                 else break;
             }
 
@@ -148,10 +148,9 @@ namespace InvestingApp.Models
         {
             get
             {
-                var today = Data.Last().DateTimeStamp;
-                var firstMonthProfitDate = Profits.Keys
-                    .First(o => o.Year == today.Year && o.Month == today.Month);
-                return Math.Round(100 * LastMonthProfit / Profits[firstMonthProfitDate], 2);
+                var today = Profits.Last().Key;
+                var firstMonthData = Data.First(o => o.DateTimeStamp.Year == today.Year && o.DateTimeStamp.Month == today.Month);
+                return Math.Round(100 * LastMonthProfit / firstMonthData.Balance, 2);
             }
         }
     }

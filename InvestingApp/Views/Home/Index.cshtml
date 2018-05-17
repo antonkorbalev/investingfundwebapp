@@ -23,24 +23,21 @@
           @{
               var bxs = new MvcHtmlString(string.Join(",", Model.Data.Select(o => string.Format("'{0}'", o.DateTimeStamp.ToString("MMM d yyyy", CultureInfo.InvariantCulture)))));
               var by1s = new MvcHtmlString(string.Join(",", Model.Data.Select(o => o.Balance.ToString("0.00", CultureInfo.InvariantCulture))));
-              var by2s = new MvcHtmlString(string.Join(",", Model.Profits.Select(o => o.Value.ToString("0.00", CultureInfo.InvariantCulture))));
           }
           var xs = [@bxs];
           var y1s = [@by1s];
-          var y2s = [@by2s];
 
           var data = new google.visualization.DataTable();
           data.addColumn('string', 'Date');
           data.addColumn('number', 'Balances, RUB');
-          data.addColumn('number', 'Profit, RUB');
           for (i = 0; i < xs.length; i++) {
-              data.addRow([xs[i].toString(), y1s[i], y2s[i]]);
+              data.addRow([xs[i].toString(), y1s[i]]);
           }
           var options = {
               title: 'Total funds and profit',
               curveType: 'function',
               legend: { position: 'bottom' },
-              hAxis: { showTextEvery: @ticksCount },
+              hAxis: { showTextEvery: @ticksCount }
           };
 
           var chart = new google.visualization.LineChart(document.getElementById('balances_chart'));
