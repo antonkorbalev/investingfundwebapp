@@ -11,6 +11,7 @@ namespace InvestingApp.Controllers
         // GET: Contacts
         public ActionResult Index()
         {
+            ViewBag.Title = "Contacts";
             return View();
         }
     }

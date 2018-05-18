@@ -2,4 +2,54 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
+<div class="container" style="width: 75%;margin: 0 auto;">
+    <div class="row">
+        <div class="col-sm-6">
+            <img src="@Url.Content("~/Content/Images/photo.jpg")" class="img-rounded center-block" style="width:200px; height:auto;"/>
+        </div>
+        <div class="col-sm-6"">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Anton Korbalev</th>
+                    </tr>
+                    <tr>
+                        <th>.NET professional, finance and machine learning enthusiast</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <img src="@Url.Content("~/Content/Images/marker.png")"/>
+                            Moscow, Russia
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="@Url.Content("~/Content/Images/github.png")" />
+                            <a href="https://github.com/antonkorbalev">GitHub</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="@Url.Content("~/Content/Images/linkedin.png")" />
+                            <a href="http://www.linkedin.com/in/anton-korbalev">LinkedIn</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="@Url.Content("~/Content/Images/facebook.png")" />
+                            <a href="https://www.facebook.com/antonkorbalev">Facebook</a>
+                        </td>
+                    </tr>
+                    <!--<tr>
+                        <td>
+                            <img src="@Url.Content("~/Content/Images/envelope.png")" />
+                            <a href="@Url.Action("Index", "Message")"> Send me a message</a>
+                        </td>
+                    </tr>-->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

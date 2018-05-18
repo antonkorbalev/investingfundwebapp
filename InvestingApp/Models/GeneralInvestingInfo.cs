@@ -5,6 +5,7 @@ using System.Web;
 using InvestingApp.Database;
 using InvestingApp.Database.Entities;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace InvestingApp.Models
 {
@@ -120,9 +121,9 @@ namespace InvestingApp.Models
             get
             {
                 return
-                    (from d in Profits
+                    (from d in Profits.Skip(1)
                     let prevs = Profits.TakeWhile(o => o.Key != d.Key)
-                    let max = prevs.Any() ? prevs.Max(o => o.Value) : 0
+                    let max =  prevs.Max(o => o.Value)
                     select (max - d.Value)).Max();
             }
         }
