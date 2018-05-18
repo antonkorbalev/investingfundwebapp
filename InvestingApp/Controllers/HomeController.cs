@@ -23,7 +23,7 @@ namespace InvestingApp.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            ViewBag.Title = "About";
+            ViewBag.Title = "Investing";
             return View(getGeneralInfo());
         }
     }
