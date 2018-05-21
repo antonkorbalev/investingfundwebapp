@@ -160,6 +160,7 @@
   <ItemGroup>
     <Content Include="Content\Images\envelope.png" />
     <Content Include="Content\Images\facebook.png" />
+    <Content Include="Content\Images\favicon.png" />
     <Content Include="Content\Images\github.png" />
     <Content Include="Content\Images\linkedin.png" />
     <Content Include="Content\Images\marker.png" />
