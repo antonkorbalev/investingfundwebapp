@@ -242,6 +242,7 @@
       <DependentUpon>201805150857092_DescriptionMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\CaptchaValidationAnswer.cs" />
     <Compile Include="Models\GeneralInvestingInfo.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ProfitPerPeroid.cs" />
