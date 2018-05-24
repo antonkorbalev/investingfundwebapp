@@ -1,5 +1,6 @@
 ﻿@model InvestingApp.Models.RequestStatusMessage
 
+<br />
 <div class="container">
     @{ 
         if (Model.IsSuccess)
@@ -16,4 +17,10 @@
 
 <script>
     grecaptcha.reset();
+    @{
+        if (Model.IsSuccess)
+        {
+            @: document.getElementById("send_msg_btn").innerText = "Send another message";
+        }
+    }
 </script> 

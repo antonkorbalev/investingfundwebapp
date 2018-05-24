@@ -14,20 +14,8 @@ namespace InvestingApp.Controllers
     public class MessageController : Controller
     {
 
-        [HttpPost]
-        public PartialViewResult SendMessage(Message message)
+        private bool checkCaptcha()
         {
-            var result = string.Format("Thank you, {0}! Your message has been sent.", message.Name);
-            var success = true;
-            if (string.IsNullOrWhiteSpace(message.Name) 
-                || string.IsNullOrWhiteSpace(message.EMail)
-                || string.IsNullOrWhiteSpace(message.Phone)
-                || string.IsNullOrWhiteSpace(message.Content))
-            {
-                result = "Invalid data. Please, fill all the fields! ";
-                success = false;
-            }
-
             CaptchaValidationAnswer answer;
             using (var client = new WebClient())
             {
@@ -36,17 +24,30 @@ namespace InvestingApp.Controllers
                 values["response"] = Request.Form["g-recaptcha-response"];
                 var response = Encoding.UTF8.GetString(client.UploadValues("https://www.google.com/recaptcha/api/siteverify", "POST", values));
                 answer = new JavaScriptSerializer().Deserialize<CaptchaValidationAnswer>(response);
+                return answer.Success;
             }
+        }
 
-            if (!answer.Success)
-            {
-                result = "Invalid captcha.";
+        private bool checkMessage(Message message)
+        {
+            if (string.IsNullOrWhiteSpace(message.Name)
+                || string.IsNullOrWhiteSpace(message.EMail)
+                || string.IsNullOrWhiteSpace(message.Phone)
+                || string.IsNullOrWhiteSpace(message.Content))
+                return false;
+            return true;
+        }
+
+        [HttpPost]
+        public PartialViewResult SendMessage(Message message)
+        {
+            var success = true;
+            if (!checkCaptcha() || (!checkMessage(message)))
                 success = false;
-            }
 
             var status = new RequestStatusMessage()
             {
-                Result = result,
+                Result = success ? string.Format("Thank you, {0}. Your message has been sent.", message.Name) : "Error! Invalid data.",
                 IsSuccess = success
             };
             return PartialView(status);
