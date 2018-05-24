@@ -5,7 +5,7 @@ using System.Web;
 
 namespace InvestingApp.Models
 {
-    public class MessageModel
+    public class Message
     {
         public string Name { get; set; }
         public string EMail { get; set; }

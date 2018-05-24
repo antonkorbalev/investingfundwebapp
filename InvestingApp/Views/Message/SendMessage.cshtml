@@ -1,0 +1,15 @@
+﻿@model InvestingApp.Models.RequestStatusMessage
+
+<div class="container">
+    @{ 
+        if (Model.IsSuccess)
+        {
+            @:<p class="text-success">
+        }
+        else
+        {
+            @:<p class="text-danger">
+        }
+}
+@Model.Result
+</div>

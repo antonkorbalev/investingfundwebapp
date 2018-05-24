@@ -11,17 +11,32 @@ namespace InvestingApp.Controllers
     {
 
         [HttpPost]
-        public ActionResult Index(MessageModel message)
+        public PartialViewResult SendMessage(Message message)
         {
+            var result = string.Format("Thank you, {0}! Your message has been sent.", message.Name);
+            var success = true;
+            if (string.IsNullOrWhiteSpace(message.Name) 
+                || string.IsNullOrWhiteSpace(message.EMail)
+                || string.IsNullOrWhiteSpace(message.Phone)
+                || string.IsNullOrWhiteSpace(message.Content))
+            {
+                result = "Invalid data. Please, fill all the fields! ";
+                success = false;
+            }
             
-            return View();
+            var status = new RequestStatusMessage()
+            {
+                Result = result,
+                IsSuccess = success
+            };
+            return PartialView(status);
         }
 
         // GET: Message
         public ActionResult Index()
         {
             ViewBag.Title = "Send a message";
-            return View(new MessageModel());
+            return View(new Message());
         }
     }
 }
