@@ -234,6 +234,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\GeneralInvestingInfo.cs" />
+    <Compile Include="Models\MessageModel.cs" />
     <Compile Include="Models\ProfitPerPeroid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
