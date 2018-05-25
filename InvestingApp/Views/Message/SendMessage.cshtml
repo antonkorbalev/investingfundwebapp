@@ -1,19 +1,18 @@
 ﻿@model InvestingApp.Models.RequestStatusMessage
 
 <br />
-<div class="container">
-    @{ 
-        if (Model.IsSuccess)
-        {
-            @:<p class="text-success">
-        }
-        else
-        {
-            @:<p class="text-danger">
-        }
+@{
+    if (Model.IsSuccess)
+    {
+        @:<p class="alert alert-success" style="width:300px;">
+    }
+    else
+    {
+        @: <p class="alert alert-danger" style="width:300px;">
+    }
 }
 @Model.Result
-</div>
+</p>
 
 <script>
     grecaptcha.reset();
