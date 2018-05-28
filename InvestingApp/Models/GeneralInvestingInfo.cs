@@ -34,10 +34,10 @@ namespace InvestingApp.Models
 
         private void updateProfitsPerMonth()
         {
-            var start = Profits.Keys.First();
+            var start = Profits.First();
             var distr = new List<ProfitPerPeriod>();
 
-            while (true)
+            /*while (true)
             {
                 var stop = Profits.Last(o => o.Key >= start && o.Key.Month == start.Month);
                 var startBal = Profits.First(o => o.Key == start).Value;
@@ -50,6 +50,27 @@ namespace InvestingApp.Models
                 if (Profits.Any(o => o.Key > stop.Key))
                     start = Profits.First(o => o.Key > stop.Key).Key;
                 else break;
+            }*/
+
+            var stop = Profits.Last(o => o.Key >= start.Key && o.Key.Month == start.Key.Month);
+            
+            while (stop.Key <= Profits.Last().Key)
+            {
+                var currProfit = stop.Value - start.Value;
+                distr.Add(
+                    new ProfitPerPeriod(stop.Key.ToString("MMM yy", CultureInfo.InvariantCulture),
+                    Math.Round(currProfit, 2),
+                    Math.Round(100 * currProfit / Data.First(o => o.DateTimeStamp == start.Key).Balance, 2)
+                    ));
+
+                start = stop;
+                if (Profits.Any(o => o.Key > start.Key))
+                {
+                    var nextMonth = Profits.First(o => o.Key > start.Key).Key.Month;
+                    stop = Profits.Last(o => o.Key.Month == nextMonth && o.Key > start.Key);
+                }
+                else
+                    break;
             }
 
             ProfitsPerMonth = distr.ToArray();
@@ -135,10 +156,7 @@ namespace InvestingApp.Models
         {
             get
             {
-                var today = Profits.Last().Key;
-                var firstMonthProfitDate = Profits.Keys
-                    .First(o => o.Year == today.Year && o.Month == today.Month);
-                return Profits[today] - Profits[firstMonthProfitDate];
+                return ProfitsPerMonth.Last().Value;
             }
         }
 
@@ -149,9 +167,7 @@ namespace InvestingApp.Models
         {
             get
             {
-                var today = Profits.Last().Key;
-                var firstMonthData = Data.First(o => o.DateTimeStamp.Year == today.Year && o.DateTimeStamp.Month == today.Month);
-                return Math.Round(100 * LastMonthProfit / firstMonthData.Balance, 2);
+                return ProfitsPerMonth.Last().Percent;
             }
         }
     }
