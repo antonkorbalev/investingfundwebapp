@@ -241,6 +241,10 @@
     <Compile Include="Migrations\201805150857092_DescriptionMigration.Designer.cs">
       <DependentUpon>201805150857092_DescriptionMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805291202274_user.cs" />
+    <Compile Include="Migrations\201805291202274_user.Designer.cs">
+      <DependentUpon>201805291202274_user.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\CaptchaValidationAnswer.cs" />
     <Compile Include="Models\GeneralInvestingInfo.cs" />
@@ -259,6 +263,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805150857092_DescriptionMigration.resx">
       <DependentUpon>201805150857092_DescriptionMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805291202274_user.resx">
+      <DependentUpon>201805291202274_user.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

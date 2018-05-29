@@ -13,7 +13,7 @@ namespace InvestingApp.Database
         public DbSet<Entities.User> Users { get; set; }
         public InvestingContext() : base("cstr")
         {
-
+            
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
