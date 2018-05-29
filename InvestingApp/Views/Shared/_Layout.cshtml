@@ -25,6 +25,14 @@
                     <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Home" ? "active" : string.Empty)">
                         @Html.ActionLink("Investing", "Index", "Home")
                     </li>
+                    @{
+                        if (Request.IsAuthenticated)
+                        {
+                            @:<li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Private" ? "active" : string.Empty)">
+                            @Html.ActionLink("Balances", "Index", "Private");
+                            @:</li>
+                        }
+                    }
                     <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Contacts" ? "active" : string.Empty)">
                         @Html.ActionLink("Contacts", "Index", "Contacts")
                     </li>
@@ -32,7 +40,16 @@
 
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="@Url.Action("Index", "Message")"><span class="glyphicon glyphicon-envelope"></span> Message</a></li>
-                    <li><a href="@Url.Action("Index", "Login")"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    @{
+                        if (Request.IsAuthenticated)
+                        {
+                            @:<li><a href="@Url.Action("Logout", "Login")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                        }
+                        else
+                        {
+                            @:<li><a href="@Url.Action("Index", "Login")"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                        }
+                    }
                 </ul>
             </div>
         </div>

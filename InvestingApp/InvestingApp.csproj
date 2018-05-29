@@ -188,6 +188,7 @@
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
     <Content Include="Views\Message\SendMessage.cshtml" />
+    <Content Include="Views\Private\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -226,6 +227,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MessageController.cs" />
+    <Compile Include="Controllers\PrivateController.cs" />
     <Compile Include="Database\Entities\BalancesRow.cs" />
     <Compile Include="Database\Entities\FlowRow.cs" />
     <Compile Include="Database\Entities\User.cs" />

@@ -5,6 +5,7 @@
 
 @using (Html.BeginForm(FormMethod.Post))
 {
+    @Html.AntiForgeryToken()
     <div class="form-group">
         @Html.LabelFor(o => o.Login, "Login:")
         @Html.TextBoxFor(o => o.Login, new { @class = "form-control", @placeholder = "What is your login?", @type = "text" })

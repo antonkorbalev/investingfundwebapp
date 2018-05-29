@@ -9,6 +9,7 @@
 
 @using (Ajax.BeginForm("SendMessage", options))
 {
+    @Html.AntiForgeryToken()
     <div class="form-group">
         @Html.LabelFor(o => o.Name, "Name:")
         @Html.TextBoxFor(o => o.Name, new { @class = "form-control", @placeholder = "What is your name?" })

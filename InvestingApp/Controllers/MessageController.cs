@@ -40,6 +40,7 @@ namespace InvestingApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public PartialViewResult SendMessage(Message message)
         {
             var success = true;

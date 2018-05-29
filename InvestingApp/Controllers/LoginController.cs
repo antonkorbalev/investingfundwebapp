@@ -7,12 +7,14 @@ using InvestingApp.Models;
 using System.Security.Cryptography;
 using System.Text;
 using InvestingApp.Database;
+using System.Web.Security;
+using System.Security.Principal;
 
 namespace InvestingApp.Controllers
 {
     public class LoginController : Controller
     {
-        private const int MAX_ATTEMPTS = 3;
+        private const int MAX_ATTEMPTS = 5;
         private readonly TimeSpan attempts_interval = TimeSpan.FromMinutes(5);
 
         private string sha256(string randomString)
@@ -27,11 +29,22 @@ namespace InvestingApp.Controllers
             return hash.ToString();
         }
 
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            HttpContext.User = new GenericPrincipal(new GenericIdentity(string.Empty), null);
+            Session.Clear();
+            System.Web.HttpContext.Current.Session.RemoveAll();
+
+            return RedirectToAction("Index", "Home");
+        }
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Index(LoginModel loginInfo)
         {
             ViewBag.Title = "Login";
-
+            
             using (var context = new InvestingContext())
             {
                 var user = context.Users.SingleOrDefault(o => o.Login == loginInfo.Login);
@@ -43,16 +56,22 @@ namespace InvestingApp.Controllers
                         user.LoginAttempts = 0;
                     user.LastAttemptTime = DateTime.Now;
                     user.LoginAttempts++;
+                    context.SaveChanges();
                     if (user.LoginAttempts >= MAX_ATTEMPTS)
                         ModelState.AddModelError("Status", string.Format("Too many attempts for user with login {0}. Please, wait.", loginInfo.Login));
-                    
-                    var hash = sha256(loginInfo.Password ?? string.Empty);
-                    if (hash == user.Password)
+
+                    if (ModelState.IsValid)
                     {
-                        
+                        var hash = sha256(loginInfo.Password ?? string.Empty);
+                        if (hash == user.Password)
+                        {
+                            FormsAuthentication.SignOut();
+                            FormsAuthentication.SetAuthCookie(user.Login, loginInfo.Remember);
+                            return RedirectToAction("Index", "Private");
+                        }
+                        else
+                            ModelState.AddModelError("Status", "Invalid password.");
                     }
-                    else
-                        ModelState.AddModelError("Status", "Invalid password.");
                 }
             }
            
@@ -61,6 +80,9 @@ namespace InvestingApp.Controllers
 
         public ActionResult Index()
         {
+            if (Request.IsAuthenticated)
+                return RedirectToAction("Index", "Private");
+
             ViewBag.Title = "Login";
             return View();
         }
