@@ -13,6 +13,20 @@
 input,
 select,
 textarea {
-    max-width: 280px;
+    max-width: 300px;
 }
 
+.chart {
+    width: 75%; 
+    height: 300px; 
+    margin: 0 auto;
+}
+
+.index-panel {
+    width: 75%;
+    margin: 0 auto;
+}
+
+.form-alert-container {
+    width: 300px;
+}

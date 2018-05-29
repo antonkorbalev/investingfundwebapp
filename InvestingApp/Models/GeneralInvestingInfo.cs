@@ -37,21 +37,6 @@ namespace InvestingApp.Models
             var start = Profits.First();
             var distr = new List<ProfitPerPeriod>();
 
-            /*while (true)
-            {
-                var stop = Profits.Last(o => o.Key >= start && o.Key.Month == start.Month);
-                var startBal = Profits.First(o => o.Key == start).Value;
-                var currProfit = stop.Value - startBal;
-                distr.Add(
-                    new ProfitPerPeriod(stop.Key.ToString("MMM yy", CultureInfo.InvariantCulture ),
-                    currProfit,
-                    Math.Round(100 * currProfit / Data.First(o => o.DateTimeStamp == start).Balance, 2)
-                    ));
-                if (Profits.Any(o => o.Key > stop.Key))
-                    start = Profits.First(o => o.Key > stop.Key).Key;
-                else break;
-            }*/
-
             var stop = Profits.Last(o => o.Key >= start.Key && o.Key.Month == start.Key.Month);
             
             while (stop.Key <= Profits.Last().Key)

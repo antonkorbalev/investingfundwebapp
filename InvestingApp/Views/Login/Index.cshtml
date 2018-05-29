@@ -1,5 +1,29 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@model InvestingApp.Models.LoginModel
+
+@using (Html.BeginForm(FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.LabelFor(o => o.Login, "Login:")
+        @Html.TextBoxFor(o => o.Login, new { @class = "form-control", @placeholder = "What is your login?", @type = "text" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(o => o.Password, "Password:")
+        @Html.TextBoxFor(o => o.Password, new { @class = "form-control", @placeholder = "What is your password?", @type = "password" })
+    </div>
+    <div class="form-group">
+        @Html.CheckBoxFor(o => o.Remember)
+        @Html.LabelFor(o => o.Remember, "Remember me", new { @class="form-check-label" })
+    </div>
+    if (!ViewData.ModelState.IsValid)
+    {
+        @: <p class="alert alert-danger form-alert-container">
+        @Html.ValidationMessage("Status")
+        @:</p>
+    }
+    <button type="submit" class="btn btn-default">Login</button>
+}
 
 
