@@ -247,6 +247,7 @@
       <DependentUpon>201805291202274_user.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\AccountData.cs" />
     <Compile Include="Models\CaptchaValidationAnswer.cs" />
     <Compile Include="Models\GeneralInvestingInfo.cs" />
     <Compile Include="Models\LoginModel.cs" />

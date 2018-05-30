@@ -12,6 +12,7 @@ using System.Security.Principal;
 
 namespace InvestingApp.Controllers
 {
+    [RequireHttps]
     public class AccountController : Controller
     {
         private const int MAX_ATTEMPTS = 5;
@@ -91,7 +92,26 @@ namespace InvestingApp.Controllers
         public ActionResult Index()
         {
             ViewBag.Title = "Account";
-            return View();
+
+            AccountData accountInfo;
+
+            using (var context = new InvestingContext())
+            {
+                var user = context.Users.FirstOrDefault(o => o.Login == HttpContext.User.Identity.Name);
+                if (user == null)
+                    Logout();
+
+                accountInfo = new AccountData()
+                {
+                    UserName = user.Name,
+                    Balances = context.Balances.OrderBy(o => o.DateTimeStamp).ToArray(),
+                    Flows = context.Flows.Where(o => o.User.Id == user.Id).ToArray(),
+                    Benefit = user.Benefit,
+                    SharedRatio = user.SharedRatio
+                };
+
+                return View(accountInfo);
+            }
         }
     }
 }
