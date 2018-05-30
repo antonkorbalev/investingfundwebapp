@@ -8,7 +8,7 @@ namespace InvestingApp.Controllers
 {
     public class ContactsController : Controller
     {
-        // GET: Contacts
+        [AllowAnonymous]
         public ActionResult Index()
         {
             ViewBag.Title = "Contacts";

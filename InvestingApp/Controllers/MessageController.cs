@@ -83,7 +83,7 @@ namespace InvestingApp.Controllers
             return PartialView(status);
         }
 
-        // GET: Message
+        [AllowAnonymous]
         public ActionResult Index()
         {
             ViewBag.Title = "Send a message";

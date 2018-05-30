@@ -80,20 +80,16 @@ namespace InvestingApp.Controllers
             return View(loginInfo);
         }
 
+        [AllowAnonymous]
         public ActionResult Login()
         {
-            if (Request.IsAuthenticated)
-                return RedirectToAction("Index");
-
             ViewBag.Title = "Login";
             return View();
         }
 
+        [Authorize]
         public ActionResult Index()
         {
-            if (!Request.IsAuthenticated)
-                return RedirectToAction("Login");
-
             ViewBag.Title = "Account";
             return View();
         }
