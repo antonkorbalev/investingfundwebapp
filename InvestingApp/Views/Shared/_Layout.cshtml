@@ -29,7 +29,7 @@
                         if (Request.IsAuthenticated)
                         {
                             @:<li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Private" ? "active" : string.Empty)">
-                            @Html.ActionLink("Balances", "Index", "Account");
+                            @Html.ActionLink("Account", "Index", "Account");
                             @:</li>
                         }
                     }
@@ -40,16 +40,28 @@
 
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="@Url.Action("Index", "Message")"><span class="glyphicon glyphicon-envelope"></span> Message</a></li>
-                    @{
-                        if (Request.IsAuthenticated)
-                        {
-                            @:<li><a href="@Url.Action("Logout", "Account")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                    <li>
+                        @{
+                            if (Request.IsAuthenticated)
+                            {
+                                using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { @id = "logoutForm" }))
+                                {
+                                    @Html.AntiForgeryToken();
+                                }
+                                @:<a id="logoutLink" href="javascript:void(0)"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+                                <script>
+                                    var form = document.getElementById("logoutForm");
+                                    document.getElementById("logoutLink").addEventListener("click", function () {
+                                        form.submit();
+                                    });
+                                </script>
+                            }
+                            else
+                            {
+                                @:<a href="@Url.Action("Index", "Account")"><span class="glyphicon glyphicon-log-in"></span> Login</a>
+                            }
                         }
-                        else
-                        {
-                            @:<li><a href="@Url.Action("Index", "Account")"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                        }
-                    }
+                    </li>
                 </ul>
             </div>
         </div>

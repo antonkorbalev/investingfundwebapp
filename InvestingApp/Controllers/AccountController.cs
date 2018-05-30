@@ -29,6 +29,8 @@ namespace InvestingApp.Controllers
             return hash.ToString();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
