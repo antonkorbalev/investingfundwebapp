@@ -29,7 +29,7 @@
                         if (Request.IsAuthenticated)
                         {
                             @:<li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Private" ? "active" : string.Empty)">
-                            @Html.ActionLink("Balances", "Index", "Private");
+                            @Html.ActionLink("Balances", "Index", "Account");
                             @:</li>
                         }
                     }
@@ -43,11 +43,11 @@
                     @{
                         if (Request.IsAuthenticated)
                         {
-                            @:<li><a href="@Url.Action("Logout", "Login")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                            @:<li><a href="@Url.Action("Logout", "Account")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                         }
                         else
                         {
-                            @:<li><a href="@Url.Action("Index", "Login")"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                            @:<li><a href="@Url.Action("Index", "Account")"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                         }
                     }
                 </ul>

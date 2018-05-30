@@ -12,7 +12,7 @@ using System.Security.Principal;
 
 namespace InvestingApp.Controllers
 {
-    public class LoginController : Controller
+    public class AccountController : Controller
     {
         private const int MAX_ATTEMPTS = 5;
         private readonly TimeSpan attempts_interval = TimeSpan.FromMinutes(5);
@@ -41,7 +41,7 @@ namespace InvestingApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Index(LoginModel loginInfo)
+        public ActionResult Login(LoginModel loginInfo)
         {
             ViewBag.Title = "Login";
             
@@ -66,8 +66,8 @@ namespace InvestingApp.Controllers
                         if (hash == user.Password)
                         {
                             FormsAuthentication.SignOut();
-                            FormsAuthentication.SetAuthCookie(user.Login, loginInfo.Remember);
-                            return RedirectToAction("Index", "Private");
+                            FormsAuthentication.SetAuthCookie(loginInfo.Login, loginInfo.Remember);
+                            return RedirectToAction("Index");
                         }
                         else
                             ModelState.AddModelError("Status", "Invalid password.");
@@ -78,12 +78,21 @@ namespace InvestingApp.Controllers
             return View(loginInfo);
         }
 
-        public ActionResult Index()
+        public ActionResult Login()
         {
             if (Request.IsAuthenticated)
-                return RedirectToAction("Index", "Private");
+                return RedirectToAction("Index");
 
             ViewBag.Title = "Login";
+            return View();
+        }
+
+        public ActionResult Index()
+        {
+            if (!Request.IsAuthenticated)
+                return RedirectToAction("Login");
+
+            ViewBag.Title = "Account";
             return View();
         }
     }
