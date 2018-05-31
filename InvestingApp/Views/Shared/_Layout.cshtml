@@ -44,7 +44,7 @@
                         @{
                             if (Request.IsAuthenticated)
                             {
-                                using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { @id = "logoutForm" }))
+                                using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { @id = "logoutForm", @action = Url.Action("Logout", "Account", ViewContext.RouteData.Values, "https") }))
                                 {
                                     @Html.AntiForgeryToken();
                                 }
