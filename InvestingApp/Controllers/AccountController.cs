@@ -101,15 +101,10 @@ namespace InvestingApp.Controllers
                 if (user == null)
                     Logout();
 
-                accountInfo = new AccountData()
-                {
-                    UserName = user.Name,
-                    Balances = context.Balances.OrderBy(o => o.DateTimeStamp).ToArray(),
-                    Flows = context.Flows.Where(o => o.User.Id == user.Id).ToArray(),
-                    Benefit = user.Benefit,
-                    SharedRatio = user.SharedRatio
-                };
-
+                accountInfo = new AccountData(user.Name, 
+                    user.SharedRatio,
+                    context.Balances.AsEnumerable().Last().Balance, 
+                    context.Flows.Where(o => o.User.Id == user.Id).ToArray());
                 return View(accountInfo);
             }
         }

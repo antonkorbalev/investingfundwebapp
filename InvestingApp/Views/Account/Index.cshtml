@@ -17,38 +17,29 @@
                     <th>Fund manager's benefit</th>
                 </tr>
                 <tr>
-                    <td>@Model.Money RUB</td>
-                    <td>@Model.Benefit %</td>
+                    <td class="text-info">@Model.Money RUB</td>
+                    <td class="text-info">@Model.Benefit %</td>
                 </tr>
                 <tr>
-                    <th>Last day profit</th>
-                    <th>Last month profit</th>
+                    <th>Account opened</th>
+                    <th>Total profit</th>
                 </tr>
                 <tr>
-                        @{
-                            if (Model.LastDayProfit > 0)
-                            {
-                                @:<td class="text-success">
-                            }
-                            else
-                            {
-                                @:<td class="text-danger">
-                            }
-                         }
-                    @Model.LastDayProfit RUB (@Model.LastDayProfitPercent %)
+                    <td class="text-info">
+                        @Model.Flows.Min(o => o.DateTimeStamp).ToString("MMM d yyyy", CultureInfo.InvariantCulture)
                     </td>
                     @{
-                        if (Model.LastMonthProfit > 0)
+                        if (Model.TotalProfit > 0)
                         {
                             @:<td class="text-success">
-                            }
-                        else
+                        }
+                    else
                         {
-                            @: <td class="text-danger">
-                            }
+                            @:<td class="text-danger">
+                        }
                     }
-                    @Model.LastMonthProfit RUB (@Model.LastMonthProfitPercent %)
-                </td>
+                    @Model.TotalProfit RUB (@Model.TotalProfitPercent %)
+                    </td>
                 </tr>
             </tbody>
         </table>

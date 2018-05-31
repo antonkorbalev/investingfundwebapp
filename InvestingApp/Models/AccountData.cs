@@ -8,22 +8,31 @@ namespace InvestingApp.Models
 {
     public class AccountData
     {
-        public string UserName { get; set; }
-        public double Benefit { get; set; }
-        public double SharedRatio { get; set; }
-        public IEnumerable<FlowRow> Flows { get; set; }
-        public IEnumerable<BalancesRow> Balances { get; set; }
+        public string UserName { get; }
+        public double Benefit { get; }
+        public double SharedRatio { get; }
+        public IEnumerable<FlowRow> Flows { get; }
+        public double CurrentBalance { get; }
 
         private double getPersonalValue(double value)
         {
             return Math.Round(value * (SharedRatio - Benefit) / 100, 2);
         }
 
+        public AccountData(string name, double ratio, double currBalance, IEnumerable<FlowRow> flows)
+        {
+            UserName = name;
+            SharedRatio = ratio;
+            Flows = flows;
+            CurrentBalance = currBalance;
+            TotalProfitPercent = Math.Round(100 * TotalProfit / Flows.Sum(o => o.Payment), 2);
+        }
+
         public double Money
         {
             get
             {
-                return getPersonalValue(Balances.Last().Balance);
+                return getPersonalValue(CurrentBalance);
             }
         }
 
@@ -31,41 +40,19 @@ namespace InvestingApp.Models
         {
             get
             {
-                return Balances.Last().Balance - Money;
+                return CurrentBalance - Money;
             }
         }
 
-        public double LastDayProfit
+        public double TotalProfit
         {
             get
             {
-                var lastBal = Balances.Last();
-                var dayBal = Balances.Last(o => o.DateTimeStamp < lastBal.DateTimeStamp);
-                var value = lastBal.Balance - dayBal.Balance;
-                LastDayProfitPercent = Math.Round((value / dayBal.Balance) * 100, 2);
-                return getPersonalValue(value);
+                var flowsSum = Flows.Sum(o => o.Payment);
+                return Money - flowsSum;
             }
         }
 
-        public double LastDayProfitPercent { get; private set; }
-        public double LastMonthProfit
-        {
-            get
-            {
-                var lastBal = Balances.Last();
-                var lastMonthBal = Balances.Last();
-                for (var i = Balances.Count() - 1; i >= 0; i--)
-                {
-                    lastMonthBal = Balances.ElementAt(i);
-                    if ((lastMonthBal.DateTimeStamp.Month != lastBal.DateTimeStamp.Month))
-                        break;
-                }
-                var value = lastBal.Balance - lastMonthBal.Balance;
-                LastMonthProfitPercent = Math.Round((value / lastMonthBal.Balance) * 100, 2);
-                return getPersonalValue(value);
-            }
-        }
-
-        public double LastMonthProfitPercent { get; private set; }
+        public double TotalProfitPercent { get; }
     }
 }
