@@ -5,33 +5,35 @@ using System.Web;
 using System.Web.Mvc;
 using InvestingApp.Database;
 using InvestingApp.Database.Entities;
+using System.Net;
 
 namespace InvestingApp.Controllers
 {
     public class ApiController : Controller
     {
-        public string Index()
+        public ActionResult Index()
         {
-            return "Specify API command";
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
-        public string TakeBalance(string key, string date, string value)
+        [HttpPost]
+        public ActionResult TakeBalance(string key, string date, string value)
         {
             if (!Request.IsLocal)
             {
-                return "Not allowed.";
+                return new HttpStatusCodeResult(HttpStatusCode.MethodNotAllowed);
             }
             try
             {
                 if (key != System.Configuration.ConfigurationManager.AppSettings["api_key"])
-                    return "API key is invalid.";
+                    return new HttpStatusCodeResult(HttpStatusCode.MethodNotAllowed);
                 var d = DateTime.Parse(date);
                 var v = double.Parse(value);
 
                 using (var context = new InvestingContext())
                 {
                     if (context.Balances.Any(o => o.DateTimeStamp == d))
-                        return "Date value already exists.";
+                        new HttpStatusCodeResult(HttpStatusCode.NotAcceptable);
                     var row = new BalancesRow()
                     {
                         Balance = v,
@@ -41,11 +43,11 @@ namespace InvestingApp.Controllers
                     context.SaveChanges();
                 }
             }
-            catch 
+            catch (Exception ex)
             {
-                return "Error";
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError);
             }
-            return "OK";
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
     }
 }
