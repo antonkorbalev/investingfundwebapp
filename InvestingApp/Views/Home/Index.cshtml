@@ -23,21 +23,29 @@
           @{
               var bxs = new MvcHtmlString(string.Join(",", Model.Data.Select(o => string.Format("'{0}'", o.DateTimeStamp.ToString("MMM d yyyy", CultureInfo.InvariantCulture)))));
               var by1s = new MvcHtmlString(string.Join(",", Model.Data.Select(o => o.Balance.ToString("0.00", CultureInfo.InvariantCulture))));
+              var by2s = new MvcHtmlString(string.Join(",", Model.Savings.Select(o => o.ToString("0.00", CultureInfo.InvariantCulture))));
           }
           var xs = [@bxs];
           var y1s = [@by1s];
+          var y2s = [@by2s];
 
           var data = new google.visualization.DataTable();
           data.addColumn('string', 'Date');
           data.addColumn('number', 'Balances, RUB');
+          data.addColumn('number', 'Savings, 5% per year, RUB');
+
           for (i = 0; i < xs.length; i++) {
-              data.addRow([xs[i].toString(), y1s[i]]);
+              data.addRow([xs[i].toString(), y1s[i], y2s[i]]);
           }
           var options = {
-              title: 'Total funds and profit',
+              title: 'Total funds',
               curveType: 'function',
               legend: { position: 'bottom' },
-              hAxis: { showTextEvery: @ticksCount }
+              hAxis: { showTextEvery: @ticksCount },
+              series: { 
+                  0: { },
+                  1: {lineWidth: 2, color: 'gray', lineDashStyle: [2, 2] }
+              }
           };
 
           var chart = new google.visualization.LineChart(document.getElementById('balances_chart'));

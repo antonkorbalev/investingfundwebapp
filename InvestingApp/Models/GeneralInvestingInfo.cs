@@ -30,6 +30,7 @@ namespace InvestingApp.Models
                            DateTimeStamp = d.DateTimeStamp
                        }).ToDictionary(o => o.DateTimeStamp, o => o.Balance);
             updateProfitsPerMonth();
+            updateSavingsPerMonth();
         }
 
         private void updateProfitsPerMonth()
@@ -61,7 +62,40 @@ namespace InvestingApp.Models
             ProfitsPerMonth = distr.ToArray();
         }
 
+        private void updateSavingsPerMonth()
+        {
+            double bal = 0;
+            double rate = 5;
+            var sl = new List<double>();
+            var firstDate = Data.First().DateTimeStamp.Date;
+            var flowDates = Flows.Where(o => o.Payment > 0)
+                .Select(o => o.DateTimeStamp.Date);
+
+            bal += Flows.Where(o => o.DateTimeStamp < Data.First().DateTimeStamp && o.Payment > 0)
+                .Select(o => o.Payment).Sum();
+
+            DateTime prevDate = firstDate;
+            foreach (var d in Data.Select(o => o.DateTimeStamp.Date))
+            {
+                if (flowDates.Contains(d))
+                    bal += Flows.Where(o => o.DateTimeStamp.Date == d && o.Payment > 0)
+                        .Sum(o => o.Payment);
+                if (d.Month != prevDate.Month)
+                {
+                    var daysDiff = (d - firstDate).TotalDays < DateTime.DaysInMonth(d.Year, d.Month) ? 
+                        (d - firstDate).TotalDays : DateTime.DaysInMonth(d.Year, d.Month);
+                    bal += bal * daysDiff * 0.01 * (rate) / (365 + (DateTime.IsLeapYear(d.Year) ? 1 : 0));
+                }
+                sl.Add(bal);
+                prevDate = d;
+            }
+
+            Savings = sl.ToArray();
+        }
+
         public Dictionary<DateTime, double> Profits { get; set; }
+
+        public double[] Savings { get; set; }
 
         public ProfitPerPeriod[] ProfitsPerMonth { get; private set; }
 
