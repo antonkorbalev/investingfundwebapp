@@ -259,7 +259,7 @@
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ProfitPerPeroid.cs" />
-    <Compile Include="Models\Rates\RatesConfig.cs" />
+    <Compile Include="Models\Rates\RatesDownloader.cs" />
     <Compile Include="Models\Rates\RateType.cs" />
     <Compile Include="Models\RequestStatusMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
