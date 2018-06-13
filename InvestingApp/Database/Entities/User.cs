@@ -7,10 +7,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InvestingApp.Database.Entities
 {
-    public class User
+    public class User : BaseEntity
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
         public string Name { get; set; }
         [Required]
         public string Login { get; set; }

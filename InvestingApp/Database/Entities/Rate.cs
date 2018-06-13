@@ -4,17 +4,18 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using InvestingApp.Models.Rates;
 
 namespace InvestingApp.Database.Entities
 {
-    public class FlowRow : BaseEntity
+    public class Rate : BaseEntity
     {
         [Required]
-        public User User { get; set; }
+        public RateType Type { get; set; }
+
         [Required]
         public DateTime DateTimeStamp { get; set; }
         [Required]
-        public double Payment { get; set; }
-        public string Description { get; set; }
+        public double Value { get; set; }
     }
 }

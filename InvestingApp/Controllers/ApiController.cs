@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using InvestingApp.Database;
 using InvestingApp.Database.Entities;
 using System.Net;
+using InvestingApp.Models.Rates;
 
 namespace InvestingApp.Controllers
 {
@@ -42,12 +43,44 @@ namespace InvestingApp.Controllers
                     context.Balances.Add(row);
                     context.SaveChanges();
                 }
+
+                SyncRates();
             }
-            catch (Exception ex)
+            catch
             {
                 return new HttpStatusCodeResult(HttpStatusCode.InternalServerError);
             }
+
             return new HttpStatusCodeResult(HttpStatusCode.OK);
+        }
+
+        private void SyncRates()
+        {
+            using (var context = new InvestingContext())
+            {
+                var balancesDates = context.Balances.Select(o => o.DateTimeStamp).ToArray();
+                var fromDate = balancesDates.Min();
+                var toDate = balancesDates.Max();
+
+                foreach (var type in Enum.GetValues(typeof(RateType)))
+                {
+                    var rateType = (RateType)type;
+                    var data = RatesDownloader.GetValues(rateType, fromDate, toDate);
+
+                    var existingRateDates = context.Rates.Where(o => o.Type == rateType)
+                        .Select(o => o.DateTimeStamp);
+                    var datesToAdd = balancesDates.Except(existingRateDates);
+
+                    foreach (var d in datesToAdd.Where(o => data.Keys.Contains(o)))
+                        context.Rates.Add(new Rate()
+                        {
+                            Type = rateType,
+                            DateTimeStamp = d,
+                            Value = data[d]
+                        });
+                    context.SaveChanges();
+                }
+            }
         }
     }
 }

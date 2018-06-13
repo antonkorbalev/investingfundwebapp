@@ -7,11 +7,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InvestingApp.Database.Entities
 {
-    public class BalancesRow : BaseEntity
+    public class BaseEntity
     {
-        [Required]
-        public DateTime DateTimeStamp { get; set; }
-        [Required]
-        public double Balance { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
     }
 }

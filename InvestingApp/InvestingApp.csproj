@@ -228,7 +228,9 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\MessageController.cs" />
     <Compile Include="Database\Entities\BalancesRow.cs" />
+    <Compile Include="Database\Entities\BaseEntity.cs" />
     <Compile Include="Database\Entities\FlowRow.cs" />
+    <Compile Include="Database\Entities\Rate.cs" />
     <Compile Include="Database\Entities\User.cs" />
     <Compile Include="Database\InvestingContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -246,6 +248,10 @@
     <Compile Include="Migrations\201805291202274_user.Designer.cs">
       <DependentUpon>201805291202274_user.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806131204495_RatesTableAdded.cs" />
+    <Compile Include="Migrations\201806131204495_RatesTableAdded.Designer.cs">
+      <DependentUpon>201806131204495_RatesTableAdded.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountData.cs" />
     <Compile Include="Models\CaptchaValidationAnswer.cs" />
@@ -253,6 +259,8 @@
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ProfitPerPeroid.cs" />
+    <Compile Include="Models\Rates\RatesConfig.cs" />
+    <Compile Include="Models\Rates\RateType.cs" />
     <Compile Include="Models\RequestStatusMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -268,6 +276,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805291202274_user.resx">
       <DependentUpon>201805291202274_user.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806131204495_RatesTableAdded.resx">
+      <DependentUpon>201806131204495_RatesTableAdded.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -4,6 +4,7 @@ using InvestingApp.Models;
 using System.Collections.Generic;
 using InvestingApp.Database.Entities;
 using System.Linq;
+using InvestingApp.Models.Rates;
 
 namespace ModuleTests
 {
@@ -95,6 +96,16 @@ namespace ModuleTests
                 data.Add(new BalancesRow() { Balance = i % 2 == 0 ? i : -i, DateTimeStamp = new DateTime(i) });
             var info = new GeneralInvestingInfo(data, flows);
             Assert.AreEqual(info.DrawDown, 1997);
+        }
+
+        [TestMethod]
+        public void TestRatesForUSDollar()
+        {
+            var values = RatesDownloader.GetValues(RateType.USDollar,
+                new DateTime(2018,1,1), new DateTime(2018, 3, 1));
+
+            Assert.AreEqual(37, values.Count());
+            Assert.AreEqual(56.4334, values.Last().Value);
         }
     }
 }
