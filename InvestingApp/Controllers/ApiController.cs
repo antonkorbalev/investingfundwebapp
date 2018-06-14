@@ -42,7 +42,7 @@ namespace InvestingApp.Controllers
                     context.SaveChanges();
                 }
 
-                syncRates();
+                SyncRates();
             }
             catch
             {
@@ -52,8 +52,10 @@ namespace InvestingApp.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
-        private void syncRates()
+        public void SyncRates()
         {
+            if (!Request.IsLocal)
+                return;
             using (var context = new InvestingContext())
             {
                 var balancesDates = context.Balances.Select(o => o.DateTimeStamp).ToArray();
