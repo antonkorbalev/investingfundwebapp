@@ -97,7 +97,7 @@ namespace InvestingApp.Models
         private void UpdateDollarBHs(IEnumerable<Rate> ratesUSD)
         {
             DollarBHs = new double[0];
-            if (ratesUSD == null)
+            if (ratesUSD == null || !ratesUSD.Any())
                 return;
 
             var bhs = new List<double>();

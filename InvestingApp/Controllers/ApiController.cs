@@ -21,9 +21,7 @@ namespace InvestingApp.Controllers
         public ActionResult TakeBalance(string key, string date, string value)
         {
             if (!Request.IsLocal)
-            {
                 return new HttpStatusCodeResult(HttpStatusCode.MethodNotAllowed);
-            }
             try
             {
                 if (key != System.Configuration.ConfigurationManager.AppSettings["api_key"])
@@ -44,7 +42,7 @@ namespace InvestingApp.Controllers
                     context.SaveChanges();
                 }
 
-                SyncRates();
+                syncRates();
             }
             catch
             {
@@ -54,12 +52,12 @@ namespace InvestingApp.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
-        public void SyncRates()
+        private void syncRates()
         {
             using (var context = new InvestingContext())
             {
                 var balancesDates = context.Balances.Select(o => o.DateTimeStamp).ToArray();
-                var fromDate = context.Flows.Min(o => o.DateTimeStamp);
+                var fromDate = context.Flows.Min(o => o.DateTimeStamp).AddMonths(-1);
                 var toDate = DateTime.Now;
 
                 foreach (var type in Enum.GetValues(typeof(RateType)))

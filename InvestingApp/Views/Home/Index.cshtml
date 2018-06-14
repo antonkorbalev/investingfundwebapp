@@ -46,20 +46,14 @@
               legend: { position: 'bottom' },
               hAxis: { showTextEvery: @ticksCount },
               vAxes: {0: {
-                  gridlines: {color: 'transparent'},
-                  title: 'Fund balances',
+                  gridlines: { color: 'transparent'},
                   format:'# RUB'
-                },
-                  1: {
-                      gridlines: {color: 'transparent'},
-                      title: 'Low-risk investments',
-                      format:'# RUB'
                 },
               },
               series: {
-                  0: { targetAxisIndex:0, lineWidth: 3 },
-                  1: { lineWidth: 1, color: 'darkgreen', lineDashStyle: [2, 2], targetAxisIndex: 1 },
-                  2: { lineWidth: 1, color: 'darkred', lineDashStyle: [2, 2], targetAxisIndex: 1 }
+                  0: { lineWidth: 3 },
+                  1: { lineWidth: 2, color: 'darkgray', lineDashStyle: [2, 2] },
+                  2: { lineWidth: 2, color: 'darkred', lineDashStyle: [2, 2] }
               }
           };
 
@@ -91,12 +85,10 @@
              legend: { position: 'bottom' },
              vAxes: {0: {
                  gridlines: {color: 'transparent'},
-                 title: 'Value',
                  format:'# RUB'
                 },
                  1: {
                      gridlines: {color: 'transparent'},
-                     title: 'Percentage',
                      format:'# \'%\''
                  },
              },
