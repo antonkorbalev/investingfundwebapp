@@ -33,30 +33,27 @@
 
           var data = new google.visualization.DataTable();
           data.addColumn('string', 'Date');
-          data.addColumn('number', 'Fund balances');
+          data.addColumn('number', 'Balances');
           data.addColumn('number', 'Savings, 5% per year');
-          data.addColumn('number', 'US Dollar B&H');
+          data.addColumn('number', 'US Dollar Buy&Hold');
 
           for (i = 0; i < xs.length; i++) {
               data.addRow([xs[i].toString(), y1s[i], y2s[i], y3s[i]]);
           }
           var options = {
-              title: 'Funds comparative chart',
-              curveType: 'function',
+              title: 'Funds comparative chart',         
               legend: { position: 'bottom' },
               hAxis: { showTextEvery: @ticksCount },
-              vAxes: {0: {
-                  format:'# RUB'
+              vAxes: {
+                  0: {
+                    scaleType: 'log',
+                    format:'# RUB'
                 },
               },
-              series: {
-                  0: { lineWidth: 2 },
-                  1: { lineWidth: 2, color: 'darkgreen', lineDashStyle: [2, 2] },
-                  2: { lineWidth: 2, color: 'darkred', lineDashStyle: [2, 2] }
-              }
+
           };
 
-          var chart = new google.visualization.LineChart(document.getElementById('balances_chart'));
+          var chart = new google.visualization.AreaChart(document.getElementById('balances_chart'));
 
           chart.draw(data, options);
       }
@@ -80,10 +77,8 @@
          }
          var options = {
              title: 'Profits per month',
-             curveType: 'function',
              legend: { position: 'bottom' },
              vAxes: {0: {
-                 gridlines: {color: 'transparent'},
                  format:'# RUB'
                 },
                  1: {
