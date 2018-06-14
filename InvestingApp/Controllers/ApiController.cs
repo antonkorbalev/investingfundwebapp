@@ -54,13 +54,13 @@ namespace InvestingApp.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
-        private void SyncRates()
+        public void SyncRates()
         {
             using (var context = new InvestingContext())
             {
                 var balancesDates = context.Balances.Select(o => o.DateTimeStamp).ToArray();
-                var fromDate = balancesDates.Min();
-                var toDate = balancesDates.Max();
+                var fromDate = context.Flows.Min(o => o.DateTimeStamp);
+                var toDate = DateTime.Now;
 
                 foreach (var type in Enum.GetValues(typeof(RateType)))
                 {

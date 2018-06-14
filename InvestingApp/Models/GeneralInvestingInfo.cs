@@ -12,7 +12,7 @@ namespace InvestingApp.Models
     public class GeneralInvestingInfo
     {
 
-        public GeneralInvestingInfo(IEnumerable<BalancesRow> data, IEnumerable<FlowRow> flows)
+        public GeneralInvestingInfo(IEnumerable<BalancesRow> data, IEnumerable<FlowRow> flows, IEnumerable<Rate> ratesUSD = null)
         {
             Data = data;
             Flows = flows;
@@ -31,6 +31,7 @@ namespace InvestingApp.Models
                        }).ToDictionary(o => o.DateTimeStamp, o => o.Balance);
             updateProfitsPerMonth();
             updateSavingsPerMonth();
+            UpdateDollarBHs(ratesUSD);
         }
 
         private void updateProfitsPerMonth()
@@ -93,9 +94,40 @@ namespace InvestingApp.Models
             Savings = sl.ToArray();
         }
 
-        public Dictionary<DateTime, double> Profits { get; set; }
+        private void UpdateDollarBHs(IEnumerable<Rate> ratesUSD)
+        {
+            DollarBHs = new double[0];
+            if (ratesUSD == null)
+                return;
 
-        public double[] Savings { get; set; }
+            var bhs = new List<double>();
+            var ratesDic = ratesUSD.ToDictionary(o => o.DateTimeStamp, o => o.Value);
+
+            double currRate = ratesDic[ratesUSD.Min(o => o.DateTimeStamp)];
+            double sumUSD = 0;
+            var datesList = Profits.Keys.ToList();
+            datesList.AddRange(Flows.Where(o => o.Payment > 0).Select(o => o.DateTimeStamp));
+
+            foreach (var d in datesList.Distinct().OrderBy(o => o))
+            {
+                if (ratesDic.ContainsKey(d))
+                    currRate = ratesDic[d];
+
+                foreach (var f in Flows.Where(o => o.DateTimeStamp == d && o.Payment > 0))
+                    sumUSD += f.Payment / currRate;
+
+                if (Profits.ContainsKey(d))
+                    bhs.Add(Math.Round(sumUSD * currRate, 2));
+            }
+
+            DollarBHs = bhs.ToArray();
+        }
+
+        public Dictionary<DateTime, double> Profits { get; private set; }
+
+        public double[] Savings { get; private set; }
+
+        public double[] DollarBHs { get; private set; }
 
         public ProfitPerPeriod[] ProfitsPerMonth { get; private set; }
 

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using InvestingApp.Models;
 using InvestingApp.Database;
+using InvestingApp.Models.Rates;
 
 namespace InvestingApp.Controllers
 {
@@ -16,7 +17,8 @@ namespace InvestingApp.Controllers
             {
                 var data = context.Balances.ToArray();
                 var flows = context.Flows.ToArray();
-                return new GeneralInvestingInfo(data, flows);       
+                var ratesUSD = context.Rates.Where(o => o.Type == RateType.USDollar).ToArray();
+                return new GeneralInvestingInfo(data, flows, ratesUSD);       
             }
         }
 

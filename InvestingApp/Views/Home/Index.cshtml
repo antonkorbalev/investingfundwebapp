@@ -24,27 +24,42 @@
               var bxs = new MvcHtmlString(string.Join(",", Model.Data.Select(o => string.Format("'{0}'", o.DateTimeStamp.ToString("MMM d yyyy", CultureInfo.InvariantCulture)))));
               var by1s = new MvcHtmlString(string.Join(",", Model.Data.Select(o => o.Balance.ToString("0.00", CultureInfo.InvariantCulture))));
               var by2s = new MvcHtmlString(string.Join(",", Model.Savings.Select(o => o.ToString("0.00", CultureInfo.InvariantCulture))));
+              var by3s = new MvcHtmlString(string.Join(",", Model.DollarBHs.Select(o => o.ToString("0.00", CultureInfo.InvariantCulture))));
           }
           var xs = [@bxs];
           var y1s = [@by1s];
           var y2s = [@by2s];
+          var y3s = [@by3s];
 
           var data = new google.visualization.DataTable();
           data.addColumn('string', 'Date');
-          data.addColumn('number', 'Balances, RUB');
-          data.addColumn('number', 'Savings, 5% per year, RUB');
+          data.addColumn('number', 'Fund balances');
+          data.addColumn('number', 'Savings, 5% per year');
+          data.addColumn('number', 'US Dollar B&H');
 
           for (i = 0; i < xs.length; i++) {
-              data.addRow([xs[i].toString(), y1s[i], y2s[i]]);
+              data.addRow([xs[i].toString(), y1s[i], y2s[i], y3s[i]]);
           }
           var options = {
-              title: 'Total funds',
+              title: 'Funds comparative chart',
               curveType: 'function',
               legend: { position: 'bottom' },
               hAxis: { showTextEvery: @ticksCount },
-              series: { 
-                  0: { },
-                  1: {lineWidth: 2, color: 'lightgray', lineDashStyle: [2, 2] }
+              vAxes: {0: {
+                  gridlines: {color: 'transparent'},
+                  title: 'Fund balances',
+                  format:'# RUB'
+                },
+                  1: {
+                      gridlines: {color: 'transparent'},
+                      title: 'Low-risk investments',
+                      format:'# RUB'
+                },
+              },
+              series: {
+                  0: { targetAxisIndex:0, lineWidth: 3 },
+                  1: { lineWidth: 1, color: 'darkgreen', lineDashStyle: [2, 2], targetAxisIndex: 1 },
+                  2: { lineWidth: 1, color: 'darkred', lineDashStyle: [2, 2], targetAxisIndex: 1 }
               }
           };
 
@@ -76,10 +91,14 @@
              legend: { position: 'bottom' },
              vAxes: {0: {
                  gridlines: {color: 'transparent'},
-             },
+                 title: 'Value',
+                 format:'# RUB'
+                },
                  1: {
                      gridlines: {color: 'transparent'},
-                     format:'# \'%\''},
+                     title: 'Percentage',
+                     format:'# \'%\''
+                 },
              },
              series: {0: {targetAxisIndex:0},
                  1:{targetAxisIndex:1},
