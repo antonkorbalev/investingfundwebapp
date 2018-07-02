@@ -12,47 +12,65 @@ namespace InvestingApp.Models
         public double Benefit { get; }
         public double SharedRatio { get; }
         public IEnumerable<FlowRow> Flows { get; }
-        public double CurrentBalance { get; }
-
-        private double getPersonalValue(double value)
-        {
-            return Math.Round(value * (SharedRatio - Benefit) / 100, 2);
-        }
-
-        public AccountData(string name, double ratio, double currBalance, IEnumerable<FlowRow> flows)
-        {
-            UserName = name;
-            SharedRatio = ratio;
-            Flows = flows;
-            CurrentBalance = currBalance;
-            TotalProfitPercent = Math.Round(100 * TotalProfit / Flows.Sum(o => o.Payment), 2);
-        }
-
-        public double Money
-        {
-            get
-            {
-                return getPersonalValue(CurrentBalance);
-            }
-        }
-
-        public double OthersMoney
-        {
-            get
-            {
-                return CurrentBalance - Money;
-            }
-        }
-
-        public double TotalProfit
-        {
-            get
-            {
-                var flowsSum = Flows.Sum(o => o.Payment);
-                return Money - flowsSum;
-            }
-        }
-
         public double TotalProfitPercent { get; }
+        public double Money { get; }
+        public double OthersMoney { get; }
+        public double TotalProfit { get; }
+        public double LastMonthProfit { get; }
+
+        public Dictionary<DateTime, double> Profits { get; }
+
+        public AccountData(User user, 
+            IEnumerable<BalancesRow> balances, 
+            IEnumerable<FlowRow> flows)
+        {
+            UserName = user.Name;
+            Flows = flows.Where(o => o.User.Id == user.Id).ToArray();
+
+            var ratios = new Dictionary<DateTime, double>();
+            var dbs = balances.OrderBy(o => o.DateTimeStamp).ToDictionary(o => o.DateTimeStamp, o => o.Balance);
+            Profits = new Dictionary<DateTime, double>();
+
+            double ownMoney = 0;
+            double othersMoney = 0;
+            DateTime date = DateTime.MinValue;
+
+            foreach (var d in dbs.Keys)
+            {
+                var currBal = dbs[d];
+                var profit = d == dbs.Min(o => o.Key) ? 0 : currBal - (othersMoney + ownMoney);
+                var currRatio = d == dbs.Min(o => o.Key) ? 0 : ownMoney / (othersMoney + ownMoney);
+                ownMoney += profit * currRatio;
+                othersMoney += profit * (1 - currRatio); 
+
+                var currFlows = flows.Where(o => o.DateTimeStamp <= d && o.DateTimeStamp > date);
+                if (currFlows.Any())
+                    foreach (var f in currFlows)
+                        if (f.User.Id == user.Id)
+                            ownMoney += f.Payment;
+                        else
+                            othersMoney += f.Payment;
+
+                ratios.Add(d, ownMoney / (othersMoney + ownMoney));
+                Profits.Add(d, ownMoney);
+                date = d;
+            }
+
+            var ownFlowsSum = Flows.Sum(o => o.Payment);
+            SharedRatio = Math.Round(ratios[balances.Last().DateTimeStamp] * 100, 2);
+            Money = Math.Round(ownMoney, 2);
+            OthersMoney = Math.Round(othersMoney, 2);
+
+            var lastMonthBalance = dbs.LastOrDefault(o => o.Key < date && o.Key.Month != date.Month);
+            LastMonthProfit = Math.Round(Money - lastMonthBalance.Value * ratios[lastMonthBalance.Key], 2);
+
+            TotalProfit = Money - ownFlowsSum;
+            if (TotalProfit > 0)
+                Money -= Math.Round(TotalProfit * (Benefit / 100), 2);
+            if (LastMonthProfit > 0)
+                LastMonthProfit -= Math.Round(LastMonthProfit * (Benefit / 100), 2);
+
+            TotalProfitPercent = Math.Round(100 * TotalProfit / ownFlowsSum, 2);
+        }
     }
 }

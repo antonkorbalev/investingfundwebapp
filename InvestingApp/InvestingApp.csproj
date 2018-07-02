@@ -108,6 +108,7 @@
       <HintPath>..\packages\Npgsql.EntityFramework.2.2.7\lib\net45\Npgsql.EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -252,6 +253,10 @@
     <Compile Include="Migrations\201806131204495_RatesTableAdded.Designer.cs">
       <DependentUpon>201806131204495_RatesTableAdded.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807020926082_Remove Shared Ratio column.cs" />
+    <Compile Include="Migrations\201807020926082_Remove Shared Ratio column.Designer.cs">
+      <DependentUpon>201807020926082_Remove Shared Ratio column.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountData.cs" />
     <Compile Include="Models\CaptchaValidationAnswer.cs" />
@@ -279,6 +284,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806131204495_RatesTableAdded.resx">
       <DependentUpon>201806131204495_RatesTableAdded.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807020926082_Remove Shared Ratio column.resx">
+      <DependentUpon>201807020926082_Remove Shared Ratio column.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

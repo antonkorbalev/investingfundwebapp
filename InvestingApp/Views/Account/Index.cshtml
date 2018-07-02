@@ -21,13 +21,10 @@
                     <td class="text-info">@Model.Benefit %</td>
                 </tr>
                 <tr>
-                    <th>Account opened</th>
                     <th>Total profit</th>
+                    <th>Month profit</th>
                 </tr>
                 <tr>
-                    <td class="text-info">
-                        @Model.Flows.Min(o => o.DateTimeStamp).ToString("MMM d yyyy", CultureInfo.InvariantCulture)
-                    </td>
                     @{
                         if (Model.TotalProfit > 0)
                         {
@@ -40,6 +37,18 @@
                     }
                     @Model.TotalProfit RUB (@Model.TotalProfitPercent %)
                     </td>
+                    @{ 
+                        if (Model.LastMonthProfit > 0)
+                        {
+                            @: <td class="text-success">
+                        }
+                        else
+                        {
+                            @: <td class="text-danger">
+                        }
+                    }
+                    @Model.LastMonthProfit RUB
+                </td>
                 </tr>
             </tbody>
         </table>
@@ -50,9 +59,43 @@
 
 <script type="text/javascript">
     google.charts.load('current', { 'packages': ['corechart'] });
-    google.charts.setOnLoadCallback(drawChart);
+    google.charts.setOnLoadCallback(drawCharts);
 
-    function drawChart() {
+    function drawCharts() {
+        drawProfitsChart();
+        drawRatioChart();
+    }
+
+    function drawProfitsChart() {
+        @{
+            var pxs = new MvcHtmlString(string.Join(",", Model.Profits.Keys.Select(o => string.Format("'{0}'", o.ToString("MMM d yyyy", CultureInfo.InvariantCulture)))));
+            var pys = new MvcHtmlString(string.Join(",", Model.Profits.Values.Select(o => o.ToString("0.00", CultureInfo.InvariantCulture))));
+            var ticksCount = Model.Profits.Count / 4;
+        }
+
+        var xs = [@pxs];
+        var y1s = [@pys];
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Date');
+        data.addColumn('number', 'Money, RUB');
+
+        for (i = 0; i < xs.length; i++) {
+            data.addRow([xs[i].toString(), y1s[i]]);
+        }
+
+        var options = {
+            title: 'Your funds',
+            curveType: 'function',
+            legend: { position: 'bottom' },
+            hAxis: { showTextEvery: @ticksCount }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('profitsChart'));
+        chart.draw(data, options);
+    }
+
+    function drawRatioChart() {
           var data = google.visualization.arrayToDataTable([
             ['Owner', 'Money, %'],
             ['You', @Model.Money.ToString("0.00", CultureInfo.InvariantCulture)],
@@ -71,6 +114,10 @@
 
     }
 </script>
+
+<div class="row">
+    <div id="profitsChart" class="chart"></div>
+</div>
 
 <div class="row">
     <div id="ratioChart" class="chart" ></div>

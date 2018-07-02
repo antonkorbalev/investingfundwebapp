@@ -14,8 +14,7 @@ namespace InvestingApp.Database.Entities
         public string Login { get; set; }
         [Required]
         public string Password { get; set; }
-        [Required]
-        public double SharedRatio{ get; set; }
+
         public double Benefit { get; set; }
         public DateTime LastAttemptTime { get; set; }
         public int LoginAttempts { get; set; }

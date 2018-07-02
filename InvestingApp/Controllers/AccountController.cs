@@ -9,6 +9,7 @@ using System.Text;
 using InvestingApp.Database;
 using System.Web.Security;
 using System.Security.Principal;
+using System.Data.Entity;
 
 namespace InvestingApp.Controllers
 {
@@ -101,10 +102,10 @@ namespace InvestingApp.Controllers
                 if (user == null)
                     Logout();
 
-                accountInfo = new AccountData(user.Name, 
-                    user.SharedRatio,
-                    context.Balances.AsEnumerable().Last().Balance, 
-                    context.Flows.Where(o => o.User.Id == user.Id).ToArray());
+                accountInfo = new AccountData(user, 
+                    context.Balances, 
+                    context.Flows.Include(o => o.User));
+
                 return View(accountInfo);
             }
         }
