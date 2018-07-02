@@ -62,15 +62,15 @@
     google.charts.setOnLoadCallback(drawCharts);
 
     function drawCharts() {
-        drawProfitsChart();
+        drawBalancesChart();
         drawRatioChart();
     }
 
-    function drawProfitsChart() {
+    function drawBalancesChart() {
         @{
-            var pxs = new MvcHtmlString(string.Join(",", Model.Profits.Keys.Select(o => string.Format("'{0}'", o.ToString("MMM d yyyy", CultureInfo.InvariantCulture)))));
-            var pys = new MvcHtmlString(string.Join(",", Model.Profits.Values.Select(o => o.ToString("0.00", CultureInfo.InvariantCulture))));
-            var ticksCount = Model.Profits.Count / 4;
+            var pxs = new MvcHtmlString(string.Join(",", Model.Balances.Keys.Select(o => string.Format("'{0}'", o.ToString("MMM d yyyy", CultureInfo.InvariantCulture)))));
+            var pys = new MvcHtmlString(string.Join(",", Model.Balances.Values.Select(o => o.ToString("0.00", CultureInfo.InvariantCulture))));
+            var ticksCount = Model.Balances.Count / 4;
         }
 
         var xs = [@pxs];
@@ -78,7 +78,7 @@
 
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Date');
-        data.addColumn('number', 'Money, RUB');
+        data.addColumn('number', 'Balances');
 
         for (i = 0; i < xs.length; i++) {
             data.addRow([xs[i].toString(), y1s[i]]);
@@ -88,7 +88,8 @@
             title: 'Your funds',
             curveType: 'function',
             legend: { position: 'bottom' },
-            hAxis: { showTextEvery: @ticksCount }
+            hAxis: { showTextEvery: @ticksCount },
+            vAxes: {0: { format:'# RUB' } }
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('profitsChart'));

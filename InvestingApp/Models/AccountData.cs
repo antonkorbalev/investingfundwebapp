@@ -18,7 +18,7 @@ namespace InvestingApp.Models
         public double TotalProfit { get; }
         public double LastMonthProfit { get; }
 
-        public Dictionary<DateTime, double> Profits { get; }
+        public Dictionary<DateTime, double> Balances { get; }
 
         public AccountData(User user, 
             IEnumerable<BalancesRow> balances, 
@@ -29,7 +29,7 @@ namespace InvestingApp.Models
 
             var ratios = new Dictionary<DateTime, double>();
             var dbs = balances.OrderBy(o => o.DateTimeStamp).ToDictionary(o => o.DateTimeStamp, o => o.Balance);
-            Profits = new Dictionary<DateTime, double>();
+            Balances = new Dictionary<DateTime, double>();
 
             double ownMoney = 0;
             double othersMoney = 0;
@@ -52,7 +52,7 @@ namespace InvestingApp.Models
                             othersMoney += f.Payment;
 
                 ratios.Add(d, ownMoney / (othersMoney + ownMoney));
-                Profits.Add(d, ownMoney);
+                Balances.Add(d, ownMoney);
                 date = d;
             }
 

@@ -17,7 +17,7 @@ namespace InvestingApp.Controllers
     public class AccountController : Controller
     {
         private const int MAX_ATTEMPTS = 5;
-        private readonly TimeSpan attempts_interval = TimeSpan.FromMinutes(5);
+        private readonly TimeSpan _attemptsInterval = TimeSpan.FromMinutes(5);
 
         private string sha256(string randomString)
         {
@@ -56,7 +56,7 @@ namespace InvestingApp.Controllers
                     ModelState.AddModelError("Status", string.Format("User with login {0} not found.", loginInfo.Login));
                 else
                 {
-                    if ((DateTime.Now - user.LastAttemptTime) > attempts_interval)
+                    if ((DateTime.Now - user.LastAttemptTime) > _attemptsInterval)
                         user.LoginAttempts = 0;
                     user.LastAttemptTime = DateTime.Now;
                     user.LoginAttempts++;
