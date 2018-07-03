@@ -11,6 +11,7 @@ namespace InvestingApp.Models
 {
     public class GeneralInvestingInfo
     {
+        public const double RISK_FREE_RATE = 5;
 
         public GeneralInvestingInfo(IEnumerable<BalancesRow> data, IEnumerable<FlowRow> flows, IEnumerable<Rate> ratesUSD = null)
         {
@@ -31,7 +32,7 @@ namespace InvestingApp.Models
                        }).ToDictionary(o => o.DateTimeStamp, o => o.Balance);
             updateProfitsPerMonth();
             updateSavingsPerMonth();
-            UpdateDollarBHs(ratesUSD);
+            updateDollarBHs(ratesUSD);
         }
 
         private void updateProfitsPerMonth()
@@ -66,7 +67,7 @@ namespace InvestingApp.Models
         private void updateSavingsPerMonth()
         {
             double bal = 0;
-            double rate = 5;
+            double rate = RISK_FREE_RATE;
             var sl = new List<double>();
             var firstDate = Data.First().DateTimeStamp.Date;
             var flowDates = Flows.Where(o => o.Payment > 0)
@@ -94,7 +95,7 @@ namespace InvestingApp.Models
             Savings = sl.ToArray();
         }
 
-        private void UpdateDollarBHs(IEnumerable<Rate> ratesUSD)
+        private void updateDollarBHs(IEnumerable<Rate> ratesUSD)
         {
             DollarBHs = new double[0];
             if (ratesUSD == null || !ratesUSD.Any())
@@ -123,12 +124,40 @@ namespace InvestingApp.Models
             DollarBHs = bhs.ToArray();
         }
 
+        private double calculateSharpeRatio()
+        {
+            var returns = ProfitsPerMonth.Select(o => (o.Percent - RISK_FREE_RATE) / 100);
+            var average = returns.Average();
+            var sumOfSquares = returns.Sum(o => (o - average) * (o - average));
+            double sd = Math.Sqrt(sumOfSquares / (returns.Count() - 1));
+            return Math.Round(average / sd, 2);
+        }
+
         public Dictionary<DateTime, double> Profits { get; private set; }
 
         public double[] Savings { get; private set; }
 
         public double[] DollarBHs { get; private set; }
 
+        public double CurrentBalance
+        {
+            get
+            {
+                return Math.Round(Data.Last().Balance, 2);
+            }
+        }
+
+        public double SharpeRatio
+        {
+            get
+            {
+                return calculateSharpeRatio();
+            }
+        }
+
+        /// <summary>
+        /// Profits for every month
+        /// </summary>
         public ProfitPerPeriod[] ProfitsPerMonth { get; private set; }
 
         /// <summary>

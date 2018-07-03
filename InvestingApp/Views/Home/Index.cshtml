@@ -1,5 +1,6 @@
 ﻿@model InvestingApp.Models.GeneralInvestingInfo
 @using System.Globalization;
+@using InvestingApp.Models;
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -11,7 +12,7 @@
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
+      google.charts.load('current', {'packages':['corechart'], 'language': '@CultureInfo.CurrentCulture.TwoLetterISOLanguageName'});
       google.charts.setOnLoadCallback(drawCharts);
 
       function drawCharts() {
@@ -25,6 +26,7 @@
               var by1s = new MvcHtmlString(string.Join(",", Model.Data.Select(o => o.Balance.ToString("0.00", CultureInfo.InvariantCulture))));
               var by2s = new MvcHtmlString(string.Join(",", Model.Savings.Select(o => o.ToString("0.00", CultureInfo.InvariantCulture))));
               var by3s = new MvcHtmlString(string.Join(",", Model.DollarBHs.Select(o => o.ToString("0.00", CultureInfo.InvariantCulture))));
+              var rate = GeneralInvestingInfo.RISK_FREE_RATE;
           }
           var xs = [@bxs];
           var y1s = [@by1s];
@@ -34,8 +36,8 @@
           var data = new google.visualization.DataTable();
           data.addColumn('string', 'Date');
           data.addColumn('number', 'Balances');
-          data.addColumn('number', 'Savings, 5% per year');
-          data.addColumn('number', 'US Dollar Buy&Hold');
+          data.addColumn('number', 'Savings, @rate % per year');
+          data.addColumn('number', 'US Dollar Buy & Hold');
 
           for (i = 0; i < xs.length; i++) {
               data.addRow([xs[i].toString(), y1s[i], y2s[i], y3s[i]]);
@@ -99,13 +101,12 @@
 
 <div class="row">
     <div class="panel panel-info index-panel">
-        <div class="panel-heading">Balances</div>
+        <div class="panel-heading">Funds and analysis</div>
             <table class="table">
                 <tbody>
                     <tr>
                         <th>Days Total</th>
                         <th>Profit Total</th>
-                        <th>Month profit</th>
                     </tr>
                     <tr class="text-info">
                         <td>
@@ -124,21 +125,10 @@
                         }
                         @Model.Profit RUB (@Model.ProfitPercent %)
                         </td>
-                        @if (Model.LastMonthProfit > 0)
-                        {
-                            @: <td class="text-success">
-                        }
-                        else
-                        {
-                            @:<td class="text-danger">
-                        }
-                        @Model.LastMonthProfit RUB (@Model.LastMonthProfitPercent %)
-                        </td>
                     </tr>
                     <tr>
-                        <th>Max </th>
-                        <th>Min</th>
-                        <th>Drawdown</th>
+                        <th>Max balance</th>
+                        <th>Min balance</th>
                     </tr>
                     <tr>
                         <td class="text-info">
@@ -147,8 +137,36 @@
                         <td class="text-info">
                             @Model.Min RUB
                         </td>
+                    </tr>
+                    <tr>
+                        <th>Month profit</th>
+                        <th>Drawdown</th>
+                    </tr>
+                    <tr>
+                        @if (Model.LastMonthProfit > 0)
+                        {
+                            @: <td class="text-success">
+                        }
+                        else
+                        {
+                            @: <td class="text-danger">
+                        }
+                        @Model.LastMonthProfit RUB (@Model.LastMonthProfitPercent %)
+                    </td>
                         <td class="text-danger">
                             @Model.DrawDown RUB
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Current balance</th>
+                        <th>Sharpe ratio <sup><a target="_blank" href="https://en.wikipedia.org/wiki/Sharpe_ratio">?</a></sup></th>
+                    </tr>
+                    <tr>
+                        <td class="text-info">
+                            @Model.CurrentBalance RUB  
+                        </td>
+                        <td class="text-info">
+                            @Model.SharpeRatio
                         </td>
                     </tr>
                 </tbody>
