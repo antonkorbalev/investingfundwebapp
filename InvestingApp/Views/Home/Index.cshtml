@@ -106,7 +106,7 @@
                 <tbody>
                     <tr>
                         <th>Days Total</th>
-                        <th>Profit Total</th>
+                        <th>Current balance</th>
                     </tr>
                     <tr class="text-info">
                         <td>
@@ -115,13 +115,25 @@
                             }
                             @totalDays
                         </td>
+                        <td class="text-info">
+                            @Model.CurrentBalance RUB
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Cumulative Sharpe ratio <sup><a target="_blank" href="https://en.wikipedia.org/wiki/Sharpe_ratio">?</a></sup></th>
+                        <th>Profit Total</th>
+                    </tr>
+                    <tr>
+                        <td class="text-info">
+                            @Model.SharpeRatio
+                        </td>
                         @if (Model.Profit > 0)
                         {
-                            @:<td class="text-success">
+                            @: <td class="text-success">
                         }
                         else
                         {
-                            @:<td class="text-danger">
+                            @: <td class="text-danger">
                         }
                         @Model.Profit RUB (@Model.ProfitPercent %)
                         </td>
@@ -155,18 +167,6 @@
                     </td>
                         <td class="text-danger">
                             @Model.DrawDown RUB
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Current balance</th>
-                        <th>Cum. sharpe ratio <sup><a target="_blank" href="https://en.wikipedia.org/wiki/Sharpe_ratio">?</a></sup></th>
-                    </tr>
-                    <tr>
-                        <td class="text-info">
-                            @Model.CurrentBalance RUB  
-                        </td>
-                        <td class="text-info">
-                            @Model.SharpeRatio
                         </td>
                     </tr>
                 </tbody>
