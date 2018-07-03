@@ -126,7 +126,17 @@ namespace InvestingApp.Models
 
         private double calculateSharpeRatio()
         {
-            var returns = ProfitsPerMonth.Select(o => (o.Percent - RISK_FREE_RATE) / 100);
+            var returns = new List<double>();
+            var dates = Data.Select(o => o.DateTimeStamp).ToArray();
+            var balances = Data.Select(o => o.Balance).ToArray();
+
+            for (var i = 1; i < Data.Count(); i++)
+            {
+                var riskFreeDayPercent = RISK_FREE_RATE / (DateTime.IsLeapYear(dates[i].Year) ? 366 : 365) / 100;
+                var totalDayPercent = ((balances[i] - balances[i - 1]) / balances[i - 1]);
+                returns.Add(totalDayPercent - riskFreeDayPercent);                
+            }
+
             var average = returns.Average();
             var sumOfSquares = returns.Sum(o => (o - average) * (o - average));
             double sd = Math.Sqrt(sumOfSquares / (returns.Count() - 1));
