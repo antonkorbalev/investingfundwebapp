@@ -133,7 +133,8 @@ namespace InvestingApp.Models
             for (var i = 1; i < Data.Count(); i++)
             {
                 var riskFreeDayPercent = RISK_FREE_RATE / (DateTime.IsLeapYear(dates[i].Year) ? 366 : 365) / 100;
-                var totalDayPercent = ((balances[i] - balances[i - 1]) / balances[i - 1]);
+                var dayPayments = Flows.Where(o => o.DateTimeStamp == dates[i]).Sum(o => o.Payment);
+                var totalDayPercent = ((balances[i] - balances[i - 1] - dayPayments) / balances[i - 1]);
                 returns.Add(totalDayPercent - riskFreeDayPercent);                
             }
 
