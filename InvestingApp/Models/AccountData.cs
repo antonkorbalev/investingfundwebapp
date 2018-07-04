@@ -17,6 +17,7 @@ namespace InvestingApp.Models
         public double OthersMoney { get; }
         public double TotalProfit { get; }
         public double LastMonthProfit { get; }
+        public double LastMonthPercent { get; }
 
         public Dictionary<DateTime, double> Balances { get; }
 
@@ -69,6 +70,8 @@ namespace InvestingApp.Models
                 Money -= Math.Round(TotalProfit * (Benefit / 100), 2);
             if (LastMonthProfit > 0)
                 LastMonthProfit -= Math.Round(LastMonthProfit * (Benefit / 100), 2);
+
+            LastMonthPercent = Math.Round(100 * LastMonthProfit / (lastMonthBalance.Value * ratios[lastMonthBalance.Key]), 2);
 
             TotalProfitPercent = Math.Round(100 * TotalProfit / ownFlowsSum, 2);
         }
