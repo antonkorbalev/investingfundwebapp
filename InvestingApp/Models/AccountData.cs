@@ -38,19 +38,18 @@ namespace InvestingApp.Models
 
             foreach (var d in dbs.Keys)
             {
-                var currBal = dbs[d];
+                var currFlows = flows.Where(o => o.DateTimeStamp <= d && o.DateTimeStamp > date);
+                var currBal = dbs[d] - currFlows.Sum(o => o.Payment);
                 var profit = d == dbs.Min(o => o.Key) ? 0 : currBal - (othersMoney + ownMoney);
                 var currRatio = d == dbs.Min(o => o.Key) ? 0 : ownMoney / (othersMoney + ownMoney);
                 ownMoney += profit * currRatio;
-                othersMoney += profit * (1 - currRatio); 
+                othersMoney += profit * (1 - currRatio);
 
-                var currFlows = flows.Where(o => o.DateTimeStamp <= d && o.DateTimeStamp > date);
-                if (currFlows.Any())
-                    foreach (var f in currFlows)
-                        if (f.User.Id == user.Id)
-                            ownMoney += f.Payment;
-                        else
-                            othersMoney += f.Payment;
+                foreach (var f in currFlows)
+                    if (f.User.Id == user.Id)
+                        ownMoney += f.Payment;
+                    else
+                        othersMoney += f.Payment;
 
                 ratios.Add(d, ownMoney / (othersMoney + ownMoney));
                 Balances.Add(d, ownMoney);
@@ -63,7 +62,8 @@ namespace InvestingApp.Models
             OthersMoney = Math.Round(othersMoney, 2);
 
             var lastMonthBalance = dbs.LastOrDefault(o => o.Key < date && o.Key.Month != date.Month);
-            LastMonthProfit = Math.Round(Money - lastMonthBalance.Value * ratios[lastMonthBalance.Key], 2);
+            var lastMonthInOut = Flows.Where(o => o.DateTimeStamp > lastMonthBalance.Key).Sum(o => o.Payment);
+            LastMonthProfit = Math.Round(Money - lastMonthBalance.Value * ratios[lastMonthBalance.Key] - lastMonthInOut , 2);
 
             TotalProfit = Money - ownFlowsSum;
             if (TotalProfit > 0)

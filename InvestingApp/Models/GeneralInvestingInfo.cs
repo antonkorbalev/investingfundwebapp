@@ -141,7 +141,7 @@ namespace InvestingApp.Models
             var average = returns.Average();
             var sumOfSquares = returns.Sum(o => (o - average) * (o - average));
             double sd = Math.Sqrt(sumOfSquares / (returns.Count() - 1));
-            return Math.Round(average / sd, 4);
+            return Math.Round(average / sd, 2);
         }
 
         public Dictionary<DateTime, double> Profits { get; private set; }
