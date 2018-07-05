@@ -86,7 +86,11 @@ namespace InvestingApp.Models
                 {
                     var daysDiff = (d - firstDate).TotalDays < DateTime.DaysInMonth(d.Year, d.Month) ? 
                         (d - firstDate).TotalDays : DateTime.DaysInMonth(d.Year, d.Month);
-                    bal += bal * daysDiff * 0.01 * (rate) / (365 + (DateTime.IsLeapYear(d.Year) ? 1 : 0));
+
+                    var periodStartDate = Data.First(o => o.DateTimeStamp.Month == prevDate.Month && o.DateTimeStamp.Year == prevDate.Year).DateTimeStamp;
+                    
+                    bal += (bal - Flows.Where(o => o.Payment > 0 && o.DateTimeStamp >= periodStartDate && o.DateTimeStamp < d).Sum(o => o.Payment)) 
+                        * daysDiff * 0.01 * (rate) / (365 + (DateTime.IsLeapYear(d.Year) ? 1 : 0));
                 }
                 sl.Add(bal);
                 prevDate = d;
