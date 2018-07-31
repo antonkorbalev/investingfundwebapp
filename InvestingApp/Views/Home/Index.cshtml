@@ -44,7 +44,7 @@
               data.addRow([xs[i].toString(), y1s[i], y2s[i], y3s[i]]);
           }
           var options = {
-              title: 'Funds comparative chart',         
+              title: 'Funds comparative chart',
               legend: { position: 'bottom' },
               hAxis: { showTextEvery: @ticksCount },
               vAxes: {
@@ -65,18 +65,21 @@
             var pxs = MVCStringsHelper.GetMVCString(Model.ProfitsPerMonth.Select(o => o.Description));
             var py1s = MVCStringsHelper.GetMVCDoublesString(Model.ProfitsPerMonth.Select(o => o.Value));
             var py2s = MVCStringsHelper.GetMVCDoublesString(Model.ProfitsPerMonth.Select(o => o.Percent));
+            var py3s = MVCStringsHelper.GetMVCDoublesString(Model.MeanProfitsPerMonth);
         }
          var xs = [@pxs];
          var y1s = [@py1s];
          var y2s = [@py2s];
+         var y3s = [@py3s];
 
          var data = new google.visualization.DataTable();
          data.addColumn('string', 'Month');
          data.addColumn('number', 'Profit, RUB');
          data.addColumn('number', 'Profit, %');
+         data.addColumn('number', 'Mean profit % per month');
 
          for (i = 0; i < xs.length; i++) {
-             data.addRow([xs[i].toString(), y1s[i], y2s[i]]);
+             data.addRow([xs[i].toString(), y1s[i], y2s[i], y3s[i]]);
          }
          var options = {
              title: 'Profits per month',
@@ -89,12 +92,16 @@
                      format:'# \'%\''
                  },
              },
-             series: {0: {targetAxisIndex:0},
-                 1:{targetAxisIndex:1},
+             curveType: 'function',
+             seriesType: 'bars',
+             series: {
+                 0: { targetAxisIndex: 0 },
+                 1: { targetAxisIndex: 1 },
+                 2: { type: 'line', targetAxisIndex: 1 }
              },
          };
 
-         var chart = new google.visualization.ColumnChart(document.getElementById('profits_per_month_chart'));
+         var chart = new google.visualization.ComboChart(document.getElementById('profits_per_month_chart'));
 
          chart.draw(data, options);
     }

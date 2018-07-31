@@ -14,6 +14,11 @@ namespace InvestingApp.Models
     {
         public const double RISK_FREE_RATE = 5;
 
+        public Dictionary<DateTime, double> Profits { get; private set; }
+        public IEnumerable<double> Savings { get; private set; }
+        public IEnumerable<double> DollarBHs { get; private set; }
+        public IEnumerable<double> MeanProfitsPerMonth { get; set; }
+
         public GeneralInvestingInfo(IEnumerable<BalancesRow> data, IEnumerable<FlowRow> flows, IEnumerable<Rate> ratesUSD = null)
         {
             Data = data;
@@ -31,6 +36,18 @@ namespace InvestingApp.Models
         private void updateProfitsPerMonth()
         {
             ProfitsPerMonth = StatsCalculator.GetProfitsByMonths(Profits, Data);
+
+            double sum = 0;
+            int n = 0;
+            var means = new List<double>();
+            foreach (var p in ProfitsPerMonth)
+            {
+                sum += p.Percent;
+                n++;
+                means.Add(Math.Round(sum / n, 2));
+            }
+
+            MeanProfitsPerMonth = means;
         }
 
         private void updateSavingsPerMonth()
@@ -48,11 +65,6 @@ namespace InvestingApp.Models
             return StatsCalculator.CalculateSharpeRatio(Data, Flows, RISK_FREE_RATE);
         }
 
-        public Dictionary<DateTime, double> Profits { get; private set; }
-
-        public IEnumerable<double> Savings { get; private set; }
-
-        public IEnumerable<double> DollarBHs { get; private set; }
 
         public double CurrentBalance
         {
