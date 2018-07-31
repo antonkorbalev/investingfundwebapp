@@ -115,7 +115,7 @@ namespace InvestingApp.Models
         {
             get
             {
-                return Math.Round(100 * Profit / Data.First().Balance, 2);
+                return Math.Round(100 * Profit / Flows.Sum(o => o.Payment) , 2);
             }
         }
 
