@@ -12,5 +12,5 @@ Actual webConfig file is not included because of sensitive data.
 
 Actual website: http://www.akinvest.tech
 
-# Example interface screen shot
+# UI example
 ![alt text](screenshot.png)
