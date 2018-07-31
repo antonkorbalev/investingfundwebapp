@@ -20,6 +20,7 @@ namespace InvestingApp.Models
         public double LastMonthPercent { get; }
 
         public Dictionary<DateTime, double> Balances { get; }
+        public ProfitPerPeriod[] ProfitsPerMonth { get; private set; }
 
         public AccountData(User user, 
             IEnumerable<BalancesRow> balances, 

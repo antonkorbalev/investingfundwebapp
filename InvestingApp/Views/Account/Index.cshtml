@@ -4,6 +4,7 @@
 
 @using System.Globalization;
 @model InvestingApp.Models.AccountData
+@using InvestingApp.Helpers; 
 
 <h4 style="text-align: center;">@Model.UserName's account</h4>
 
@@ -68,8 +69,8 @@
 
     function drawBalancesChart() {
         @{
-            var pxs = new MvcHtmlString(string.Join(",", Model.Balances.Keys.Select(o => string.Format("'{0}'", o.ToString("MMM d yyyy", CultureInfo.InvariantCulture)))));
-            var pys = new MvcHtmlString(string.Join(",", Model.Balances.Values.Select(o => o.ToString("0.00", CultureInfo.InvariantCulture))));
+            var pxs = MVCStringsHelper.GetMVCDatesString(Model.Balances.Select(o => o.Key));
+            var pys = MVCStringsHelper.GetMVCDoublesString(Model.Balances.Select(o => o.Value));
             var ticksCount = Model.Balances.Count / 4;
         }
 
