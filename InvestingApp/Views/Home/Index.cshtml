@@ -76,7 +76,7 @@
          data.addColumn('string', 'Month');
          data.addColumn('number', 'Profit, RUB');
          data.addColumn('number', 'Profit, %');
-         data.addColumn('number', 'Mean profit % per month');
+         data.addColumn('number', 'Cml. mean profit % per month (all history)');
 
          for (i = 0; i < xs.length; i++) {
              data.addRow([xs[i].toString(), y1s[i], y2s[i], y3s[i]]);
@@ -128,7 +128,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>Cumulative Sharpe ratio <sup><a target="_blank" href="https://en.wikipedia.org/wiki/Sharpe_ratio">?</a></sup></th>
+                        <th>Cml. Sharpe ratio <sup><a target="_blank" href="https://en.wikipedia.org/wiki/Sharpe_ratio">?</a></sup></th>
                         <th>Profit Total</th>
                     </tr>
                     <tr>
