@@ -24,6 +24,16 @@ namespace InvestingApp.Helpers
                     }).ToDictionary(o => o.DateTimeStamp, o => o.Balance);
         }
 
+        public static Dictionary<DateTime, double> GetProfits(Dictionary<DateTime, double> balances,
+            IEnumerable<FlowRow> flows)
+        {
+            return GetProfits(balances.Select(o => new BalancesRow()
+            {
+                DateTimeStamp = o.Key,
+                Balance = o.Value
+            }), flows);
+        }
+
         public static IEnumerable<ProfitPerPeriod> GetProfitsByMonths(Dictionary<DateTime, double> profits,
             IEnumerable<BalancesRow> balances)
         {
@@ -52,6 +62,17 @@ namespace InvestingApp.Helpers
             }
 
             return distr;
+        }
+
+        public static IEnumerable<ProfitPerPeriod> GetProfitsByMonths(Dictionary<DateTime, double> profits,
+        Dictionary<DateTime, double> balances)
+        {
+            return GetProfitsByMonths(profits, 
+                balances.Select(o => new BalancesRow()
+                {
+                    DateTimeStamp = o.Key,
+                    Balance = o.Value
+                }));
         }
 
         public static double CalculateSharpeRatio(IEnumerable<BalancesRow> bals,

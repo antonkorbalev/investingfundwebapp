@@ -64,6 +64,7 @@
 
     function drawCharts() {
         drawBalancesChart();
+        drawProfitsChart();
         drawRatioChart();
     }
 
@@ -97,6 +98,45 @@
         chart.draw(data, options);
     }
 
+    function drawProfitsChart() {
+    @{
+        var pmxs = MVCStringsHelper.GetMVCString(Model.ProfitsPerMonth.Select(o => o.Description));
+        var pmy1s = MVCStringsHelper.GetMVCDoublesString(Model.ProfitsPerMonth.Select(o => o.Value));
+        var pmy2s = MVCStringsHelper.GetMVCDoublesString(Model.ProfitsPerMonth.Select(o => o.Percent));
+    }
+        var xs = [@pmxs];
+        var y1s = [@pmy1s];
+        var y2s = [@pmy2s];
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Month');
+        data.addColumn('number', 'Profit, RUB');
+        data.addColumn('number', 'Profit, %');
+
+        for (i = 0; i < xs.length; i++) {
+            data.addRow([xs[i].toString(), y1s[i], y2s[i]]);
+        }
+        var options = {
+            title: 'Profits per month',
+            legend: { position: 'bottom' },
+            vAxes: {0: {
+                format:'# RUB'
+            },
+                1: {
+                    gridlines: {color: 'transparent'},
+                    format:'# \'%\''
+                },
+            },
+            series: {0: {targetAxisIndex:0},
+                1:{targetAxisIndex:1},
+            },
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('profitsPerMonthChart'));
+
+        chart.draw(data, options);
+    }
+
     function drawRatioChart() {
           var data = google.visualization.arrayToDataTable([
             ['Owner', 'Money, %'],
@@ -119,6 +159,10 @@
 
 <div class="row">
     <div id="profitsChart" class="chart"></div>
+</div>
+
+<div class="row">
+    <div id="profitsPerMonthChart" class="chart"></div>
 </div>
 
 <div class="row">

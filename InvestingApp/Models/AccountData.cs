@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using InvestingApp.Database.Entities;
+using InvestingApp.Helpers;
 
 namespace InvestingApp.Models
 {
@@ -20,7 +21,7 @@ namespace InvestingApp.Models
         public double LastMonthPercent { get; }
 
         public Dictionary<DateTime, double> Balances { get; }
-        public ProfitPerPeriod[] ProfitsPerMonth { get; private set; }
+        public IEnumerable<ProfitPerPeriod> ProfitsPerMonth { get; private set; }
 
         public AccountData(User user, 
             IEnumerable<BalancesRow> balances, 
@@ -75,6 +76,8 @@ namespace InvestingApp.Models
             LastMonthPercent = Math.Round(100 * LastMonthProfit / (lastMonthBalance.Value * ratios[lastMonthBalance.Key]), 2);
 
             TotalProfitPercent = Math.Round(100 * TotalProfit / ownFlowsSum, 2);
+
+            ProfitsPerMonth = StatsCalculator.GetProfitsByMonths(StatsCalculator.GetProfits(Balances, Flows), Balances);
         }
     }
 }
