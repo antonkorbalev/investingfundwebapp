@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using InvestingApp.Database.Entities;
 using System.Linq;
 using InvestingApp.Models.Rates;
+using InvestingApp.Helpers;
 
 namespace ModuleTests
 {
@@ -106,6 +107,17 @@ namespace ModuleTests
 
             Assert.AreEqual(37, values.Count());
             Assert.AreEqual(56.4334, values.Last().Value);
+        }
+
+        [TestMethod]
+        public void TestTicksRangeForAGraph()
+        {
+            var rangeStr = MVCStringsHelper.GetTicksRange(45000.45, 176000.86);
+            Assert.AreEqual("[70000,90000,120000,140000,170000]", rangeStr);
+            rangeStr = MVCStringsHelper.GetTicksRange(45000.45, 276000.86, divisor:100000, partsCount:2);
+            Assert.AreEqual("[100000,200000]", rangeStr);
+            rangeStr = MVCStringsHelper.GetTicksRange(45000.45, 176000.86, partsCount:2);
+            Assert.AreEqual("[110000,170000]", rangeStr);
         }
     }
 }

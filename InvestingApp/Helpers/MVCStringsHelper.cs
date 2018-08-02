@@ -29,5 +29,23 @@ namespace InvestingApp.Helpers
         {
             return CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
         }
+
+        public static string GetTicksRange(double min, double max, int partsCount = 5, int divisor = 10000)
+        {
+            var ticksList = new List<double>();
+
+            if (partsCount > 1)
+            {
+                var step = (max - min) / (partsCount);
+
+                for (var i = 1; i <= partsCount; i++)
+                {
+                    var value = min + step * i;
+                    ticksList.Add(value - value % divisor);
+                }
+            }
+
+            return string.Format("[{0}]", string.Join(",", ticksList.Distinct().Select(o => Math.Floor(o))));
+        }
     }
 }

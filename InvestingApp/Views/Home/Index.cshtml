@@ -7,59 +7,56 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@{ 
-    var ticksCount = Model.Data.Count() / 4;
-}
-
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart'], 'language': '@MVCStringsHelper.GetCurrentCultureDesignation()'});
-      google.charts.setOnLoadCallback(drawCharts);
+    google.charts.load('current', {'packages':['corechart'], 'language': '@MVCStringsHelper.GetCurrentCultureDesignation()'});
+    google.charts.setOnLoadCallback(drawCharts);
 
-      function drawCharts() {
-          drawBalancesChart();
-          drawProfitsChart();
-      }
+    function drawCharts() {
+        drawBalancesChart();
+        drawProfitsChart();
+    }
 
-      function drawBalancesChart() {
-          @{
+    function drawBalancesChart() {
+        @{
               var bxs = MVCStringsHelper.GetMVCDatesString(Model.Data.Select(o => o.DateTimeStamp));
               var by1s = MVCStringsHelper.GetMVCDoublesString(Model.Data.Select(o => o.Balance));
               var by2s = MVCStringsHelper.GetMVCDoublesString(Model.Savings);
               var by3s = MVCStringsHelper.GetMVCDoublesString(Model.DollarBHs);
               var rate = GeneralInvestingInfo.RISK_FREE_RATE;
           }
-          var xs = [@bxs];
-          var y1s = [@by1s];
-          var y2s = [@by2s];
-          var y3s = [@by3s];
+        var xs = [@bxs];
+        var y1s = [@by1s];
+        var y2s = [@by2s];
+        var y3s = [@by3s];
 
-          var data = new google.visualization.DataTable();
-          data.addColumn('string', 'Date');
-          data.addColumn('number', 'Balances');
-          data.addColumn('number', 'Savings, @rate % per year');
-          data.addColumn('number', 'US Dollar Buy & Hold');
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Date');
+        data.addColumn('number', 'Balances');
+        data.addColumn('number', 'Savings, @rate % per year');
+        data.addColumn('number', 'US Dollar Buy & Hold');
 
-          for (i = 0; i < xs.length; i++) {
-              data.addRow([xs[i].toString(), y1s[i], y2s[i], y3s[i]]);
-          }
-          var options = {
-              title: 'Funds comparative chart',
-              legend: { position: 'bottom' },
-              hAxis: { showTextEvery: @ticksCount },
-              vAxes: {
-                  0: {
+        for (i = 0; i < xs.length; i++) {
+            data.addRow([xs[i].toString(), y1s[i], y2s[i], y3s[i]]);
+        }
+        var options = {
+            title: 'Funds comparative chart',
+            legend: { position: 'bottom' },
+            hAxis:  { showTextEvery: @Model.GetHAxisTicksCount() },
+            vAxes:  {
+                0: {
                     scaleType: 'log',
-                    format:'# RUB'
-                },
-              },
+                    format:'# RUB',
+                    ticks: @Model.GetVAxisTicks()
+                    },
+            },
 
-          };
+        };
 
-          var chart = new google.visualization.AreaChart(document.getElementById('balances_chart'));
+        var chart = new google.visualization.AreaChart(document.getElementById('balances_chart'));
 
-          chart.draw(data, options);
-      }
+        chart.draw(data, options);
+    }
     function drawProfitsChart() {
         @{
             var pxs = MVCStringsHelper.GetMVCString(Model.ProfitsPerMonth.Select(o => o.Description));
@@ -67,43 +64,43 @@
             var py2s = MVCStringsHelper.GetMVCDoublesString(Model.ProfitsPerMonth.Select(o => o.Percent));
             var py3s = MVCStringsHelper.GetMVCDoublesString(Model.MeanProfitsPerMonth);
         }
-         var xs = [@pxs];
-         var y1s = [@py1s];
-         var y2s = [@py2s];
-         var y3s = [@py3s];
+        var xs = [@pxs];
+        var y1s = [@py1s];
+        var y2s = [@py2s];
+        var y3s = [@py3s];
 
-         var data = new google.visualization.DataTable();
-         data.addColumn('string', 'Month');
-         data.addColumn('number', 'Profit, RUB');
-         data.addColumn('number', 'Profit, %');
-         data.addColumn('number', 'Cml. mean profit % per month (all history)');
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Month');
+        data.addColumn('number', 'Profit, RUB');
+        data.addColumn('number', 'Profit, %');
+        data.addColumn('number', 'Cml. mean profit % per month (all history)');
 
-         for (i = 0; i < xs.length; i++) {
-             data.addRow([xs[i].toString(), y1s[i], y2s[i], y3s[i]]);
-         }
-         var options = {
-             title: 'Profits per month',
-             legend: { position: 'bottom' },
-             vAxes: {0: {
-                 format:'# RUB'
+        for (i = 0; i < xs.length; i++) {
+            data.addRow([xs[i].toString(), y1s[i], y2s[i], y3s[i]]);
+        }
+        var options = {
+            title: 'Profits per month',
+            legend: { position: 'bottom' },
+            vAxes: {0: {
+                format:'# RUB'
+            },
+                1: {
+                    gridlines: {color: 'transparent'},
+                    format:'# \'%\''
                 },
-                 1: {
-                     gridlines: {color: 'transparent'},
-                     format:'# \'%\''
-                 },
-             },
-             curveType: 'function',
-             seriesType: 'bars',
-             series: {
-                 0: { targetAxisIndex: 0 },
-                 1: { targetAxisIndex: 1 },
-                 2: { type: 'line', targetAxisIndex: 1 }
-             },
-         };
+            },
+            curveType: 'function',
+            seriesType: 'bars',
+            series: {
+                0: { targetAxisIndex: 0 },
+                1: { targetAxisIndex: 1 },
+                2: { type: 'line', targetAxisIndex: 1 }
+            },
+        };
 
-         var chart = new google.visualization.ComboChart(document.getElementById('profits_per_month_chart'));
+        var chart = new google.visualization.ComboChart(document.getElementById('profits_per_month_chart'));
 
-         chart.draw(data, options);
+        chart.draw(data, options);
     }
 </script>
 

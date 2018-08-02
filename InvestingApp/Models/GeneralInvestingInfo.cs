@@ -108,6 +108,16 @@ namespace InvestingApp.Models
             }
         }
 
+        public int GetHAxisTicksCount()
+        {
+            return Data.Count() / 4;
+        }
+
+        public string GetVAxisTicks()
+        {
+            return MVCStringsHelper.GetTicksRange(Data.Min(o => o.Balance), Data.Max(o => o.Balance), 4);
+        }
+
         /// <summary>
         /// Percent of total profit
         /// </summary>
