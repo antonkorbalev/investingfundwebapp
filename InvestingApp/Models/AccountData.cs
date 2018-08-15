@@ -29,6 +29,7 @@ namespace InvestingApp.Models
         {
             UserName = user.Name;
             Flows = flows.Where(o => o.User.Id == user.Id).ToArray();
+            var startDate = Flows.Min(o => o.DateTimeStamp);
 
             var ratios = new Dictionary<DateTime, double>();
             var dbs = balances.OrderBy(o => o.DateTimeStamp).ToDictionary(o => o.DateTimeStamp, o => o.Balance);
@@ -52,9 +53,9 @@ namespace InvestingApp.Models
                         ownMoney += f.Payment;
                     else
                         othersMoney += f.Payment;
-
                 ratios.Add(d, ownMoney / (othersMoney + ownMoney));
-                Balances.Add(d, ownMoney);
+                if (startDate <= d)
+                    Balances.Add(d, ownMoney);
                 date = d;
             }
 
@@ -67,7 +68,7 @@ namespace InvestingApp.Models
             var lastMonthInOut = Flows.Where(o => o.DateTimeStamp > lastMonthBalance.Key).Sum(o => o.Payment);
             LastMonthProfit = Math.Round(Money - lastMonthBalance.Value * ratios[lastMonthBalance.Key] - lastMonthInOut , 2);
 
-            TotalProfit = Money - ownFlowsSum;
+            TotalProfit = Math.Round(Money - ownFlowsSum, 2);
             if (TotalProfit > 0)
                 Money -= Math.Round(TotalProfit * (Benefit / 100), 2);
             if (LastMonthProfit > 0)

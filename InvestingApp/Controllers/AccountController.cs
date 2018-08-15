@@ -17,13 +17,13 @@ namespace InvestingApp.Controllers
     public class AccountController : Controller
     {
         private const int MAX_ATTEMPTS = 5;
-        private readonly TimeSpan _attemptsInterval = TimeSpan.FromMinutes(5);
+        private readonly TimeSpan _attemptsInterval = TimeSpan.FromMinutes(15);
 
-        private string sha256(string randomString)
+        private string sha256(string str)
         {
             var crypt = new SHA256Managed();
             var hash = new StringBuilder();
-            byte[] crypto = crypt.ComputeHash(Encoding.ASCII.GetBytes(randomString));
+            byte[] crypto = crypt.ComputeHash(Encoding.ASCII.GetBytes(str));
             foreach (byte theByte in crypto)
             {
                 hash.Append(theByte.ToString("x2"));
