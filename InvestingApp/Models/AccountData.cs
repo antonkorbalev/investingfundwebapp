@@ -74,7 +74,9 @@ namespace InvestingApp.Models
             if (LastMonthProfit > 0)
                 LastMonthProfit -= Math.Round(LastMonthProfit * (Benefit / 100), 2);
 
-            LastMonthPercent = Math.Round(100 * LastMonthProfit / (lastMonthBalance.Value * ratios[lastMonthBalance.Key]), 2);
+            var initialLastMonthFunds = lastMonthBalance.Value * ratios[lastMonthBalance.Key];
+            if (initialLastMonthFunds != 0)
+                LastMonthPercent = Math.Round(100 * LastMonthProfit / initialLastMonthFunds, 2);
 
             TotalProfitPercent = Math.Round(100 * TotalProfit / ownFlowsSum, 2);
 
