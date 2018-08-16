@@ -1,33 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Net;
-using System.Collections.Specialized;
 using InvestingApp.Models;
 using System.Text;
-using System.Web.Script.Serialization;
 using System.Net.Mail;
+using InvestingApp.Helpers;
+using System.Web.Configuration;
 
 namespace InvestingApp.Controllers
 {
     public class MessageController : Controller
     {
-
-        private bool checkCaptcha()
-        {
-            CaptchaValidationAnswer answer;
-            using (var client = new WebClient())
-            {
-                var values = new NameValueCollection();
-                values["secret"] = System.Web.Configuration.WebConfigurationManager.AppSettings["captcha_key"];
-                values["response"] = Request.Form["g-recaptcha-response"];
-                var response = Encoding.UTF8.GetString(client.UploadValues("https://www.google.com/recaptcha/api/siteverify", "POST", values));
-                answer = new JavaScriptSerializer().Deserialize<CaptchaValidationAnswer>(response);
-                return answer.Success;
-            }
-        }
 
         private bool checkMessage(Message message)
         {
@@ -44,14 +26,14 @@ namespace InvestingApp.Controllers
         public PartialViewResult SendMessage(Message message)
         {
             var success = true;
-            if (!checkCaptcha() || (!checkMessage(message)))
+            if (!(CaptchaChecker.CheckCaptcha(Request) || (!checkMessage(message))))
                 success = false;
 
             if (success)
             {
                 var mailMessage = new MailMessage();
                 mailMessage.From = new MailAddress("web@akinvest.tech");
-                mailMessage.To.Add(System.Web.Configuration.WebConfigurationManager.AppSettings["email_to"]);
+                mailMessage.To.Add(WebConfigurationManager.AppSettings["email_to"]);
                 mailMessage.Subject = "New message from AK investing techs";
                 mailMessage.IsBodyHtml = true;
                 var bld = new StringBuilder();

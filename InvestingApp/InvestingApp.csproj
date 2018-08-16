@@ -196,6 +196,8 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
     <Content Include="Views\Message\SendMessage.cshtml" />
     <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\MarginCalculator\Index.cshtml" />
+    <Content Include="Views\MarginCalculator\GetMargin.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -233,6 +235,7 @@
     <Compile Include="Controllers\ContactsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\MarginCalculatorController.cs" />
     <Compile Include="Controllers\MessageController.cs" />
     <Compile Include="Database\Entities\BalancesRow.cs" />
     <Compile Include="Database\Entities\BaseEntity.cs" />
@@ -243,6 +246,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\CaptchaChecker.cs" />
     <Compile Include="Helpers\MVCStringsHelper.cs" />
     <Compile Include="Helpers\StatsCalculator.cs" />
     <Compile Include="Migrations\201805150819471_InitialCreate.cs" />
@@ -267,9 +271,14 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountData.cs" />
+    <Compile Include="Models\Margins\CalculatedMargin.cs" />
     <Compile Include="Models\CaptchaValidationAnswer.cs" />
     <Compile Include="Models\GeneralInvestingInfo.cs" />
     <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\Margins\InstrumentType.cs" />
+    <Compile Include="Models\Margins\MarginCalculationRequest.cs" />
+    <Compile Include="Models\Margins\MarginRow.cs" />
+    <Compile Include="Models\Margins\StockExchange.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ProfitPerPeroid.cs" />
     <Compile Include="Models\Rates\RatesDownloader.cs" />

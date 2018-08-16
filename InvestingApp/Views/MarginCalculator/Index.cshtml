@@ -1,0 +1,50 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using System.Web.Mvc
+@using InvestingApp.Models.Margins
+
+@model InvestingApp.Models.Margins.MarginCalculationRequest
+
+@{
+    AjaxOptions options = new AjaxOptions() { UpdateTargetId = "cid", HttpMethod = "post" };
+}
+
+<script language="javascript">
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+</script>
+
+@using (Ajax.BeginForm("GetMargin", options))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        @Html.LabelFor(o => o.StockExchange, "Stock exchange:")
+        @Html.DropDownListFor(o => o.StockExchange, new SelectList(Enum.GetNames(typeof(StockExchange))), new { @class = "form-control"})
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(o => o.Instrument, "Instrument:")
+        @Html.TextBoxFor(o => o.Instrument, new { @class = "form-control", @placeholder = "Si-9.18 or SiU8" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(o => o.Type, "Type:")
+        @Html.DropDownListFor(o => o.Type, new SelectList(Enum.GetNames(typeof(InstrumentType))), new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(o => o.Money, "Money:")
+        @Html.TextBoxFor(o => o.Money, new { @class = "form-control", @placeholder = "100000 RUB", @onkeypress = "return isNumberKey(event)" })
+    </div>
+    <button id="calc_btn" type="submit" class="btn btn-default">Calculate margins</button>
+    <div id="cid">
+
+    </div>
+}
+
+
+

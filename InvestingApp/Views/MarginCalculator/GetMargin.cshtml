@@ -1,0 +1,29 @@
+﻿@model InvestingApp.Models.Margins.CalculatedMargin
+
+<br />
+@if (!Model.Success)
+{
+    @: <p class="alert alert-danger form-alert-container"> Instrument not found or parameters are invalid. </p>
+}
+else
+{
+<table class="table">
+<tbody>
+    <tr>
+        <th>%</th>
+        <th>Amount</th>
+        <th>Money</th>
+        <th>Residue</th>
+    </tr>
+@foreach (var m in Model.Margins)
+{
+    <tr>
+        <td>@m.Percent</td>
+        <td>@m.Amount</td>
+        <td>@m.Money RUB</td>
+        <td>@m.Residue RUB</td>
+    </tr>
+}
+</tbody>
+</table>
+}
