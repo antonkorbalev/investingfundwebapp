@@ -82,7 +82,7 @@ namespace ModuleTests
         {
             var data = getInvestingInfo();
             Assert.AreEqual(data.Profit, 15);
-            Assert.AreEqual(data.ProfitPercent, 300);
+            Assert.AreEqual(data.ProfitPercent, 100);
             Assert.AreEqual(data.Max, 27);
             Assert.AreEqual(data.Min, -7);
             Assert.AreEqual(data.DrawDown, 9);    

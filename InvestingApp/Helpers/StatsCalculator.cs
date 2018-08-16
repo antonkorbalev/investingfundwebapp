@@ -18,7 +18,7 @@ namespace InvestingApp.Helpers
                     new
                     {
                         Balance = d.Balance - (flows != null ? flows
-                              .Where(f => f.DateTimeStamp <= d.DateTimeStamp)
+                              .Where(f => f.DateTimeStamp <= d.DateTimeStamp && f.Payment > 0)
                               .Sum(o => o.Payment) : 0),
                         DateTimeStamp = d.DateTimeStamp
                     }).ToDictionary(o => o.DateTimeStamp, o => o.Balance);

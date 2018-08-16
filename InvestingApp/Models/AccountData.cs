@@ -59,7 +59,7 @@ namespace InvestingApp.Models
                 date = d;
             }
 
-            var ownFlowsSum = Flows.Sum(o => o.Payment);
+            var ownFlowsSum = Flows.Where(o => o.Payment > 0).Sum(o => o.Payment);
             SharedRatio = Math.Round(ratios[balances.Last().DateTimeStamp] * 100, 2);
             Money = Math.Round(ownMoney, 2);
             OthersMoney = Math.Round(othersMoney, 2);
