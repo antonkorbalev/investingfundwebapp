@@ -66,21 +66,18 @@ namespace InvestingApp.Models
 
             var lastMonthBalance = dbs.LastOrDefault(o => o.Key < date && o.Key.Month != date.Month);
             var lastMonthInOut = Flows.Where(o => o.DateTimeStamp > lastMonthBalance.Key).Sum(o => o.Payment);
-            LastMonthProfit = Math.Round(Money - lastMonthBalance.Value * ratios[lastMonthBalance.Key] - lastMonthInOut , 2);
 
             TotalProfit = Math.Round(Money - ownFlowsSum, 2);
             if (TotalProfit > 0)
                 Money -= Math.Round(TotalProfit * (Benefit / 100), 2);
-            if (LastMonthProfit > 0)
-                LastMonthProfit -= Math.Round(LastMonthProfit * (Benefit / 100), 2);
-
-            var initialLastMonthFunds = lastMonthBalance.Value * ratios[lastMonthBalance.Key];
-            if (initialLastMonthFunds != 0)
-                LastMonthPercent = Math.Round(100 * LastMonthProfit / initialLastMonthFunds, 2);
 
             TotalProfitPercent = Math.Round(100 * TotalProfit / ownFlowsSum, 2);
 
             ProfitsPerMonth = StatsCalculator.GetProfitsByMonths(StatsCalculator.GetProfits(Balances, Flows), Balances);
+
+            var lastMonthProfit = ProfitsPerMonth.Last();
+            LastMonthProfit = Math.Round(lastMonthProfit.Value * (1 - Benefit / 100), 2);
+            LastMonthPercent = Math.Round(lastMonthProfit.Percent * (1 - Benefit / 100), 2);
         }
     }
 }
