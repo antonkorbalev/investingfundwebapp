@@ -7,23 +7,32 @@
 }
 else
 {
-<table class="table">
-<tbody>
-    <tr>
-        <th>%</th>
-        <th>Amount</th>
-        <th>Money</th>
-        <th>Residue</th>
-    </tr>
-@foreach (var m in Model.Margins)
-{
-    <tr>
-        <td>@m.Percent</td>
-        <td>@m.Amount</td>
-        <td>@m.Money RUB</td>
-        <td>@m.Residue RUB</td>
-    </tr>
-}
-</tbody>
-</table>
+    <h4>
+        Instrument: <b> @Model.InstrumentName (@Model.InstrumentCode) </b>
+    </h4>
+    <h4>
+            Initial margin: <b> @Model.InitialMargin (@Model.InitialMarginPercent %) </b>
+    </h4>
+    <h4>
+            Delivery date: <b> @Model.DeliveryDate.ToShortDateString()  </b>
+    </h4>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>%</th>
+                    <th>Amount</th>
+                    <th>Money</th>
+                    <th>Residue</th>
+                </tr>
+                @foreach (var m in Model.Margins)
+                {
+                    <tr>
+                        <td>@m.Percent</td>
+                        <td>@m.Amount</td>
+                        <td>@m.Money RUB</td>
+                        <td>@m.Residue RUB</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 }
