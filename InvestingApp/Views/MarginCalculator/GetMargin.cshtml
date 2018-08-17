@@ -16,13 +16,14 @@ else
     <h4>
             Delivery date: <b> @Model.DeliveryDate.ToShortDateString()  </b>
     </h4>
-        <table class="table">
+        <table class="table table-striped table-condensed">
             <tbody>
                 <tr>
                     <th>%</th>
                     <th>Amount</th>
                     <th>Money</th>
                     <th>Residue</th>
+                    <th>Residue / item</th>
                 </tr>
                 @foreach (var m in Model.Margins)
                 {
@@ -31,6 +32,7 @@ else
                         <td>@m.Amount</td>
                         <td>@m.Money RUB</td>
                         <td>@m.Residue RUB</td>
+                        <td>@m.ResiduePerItem RUB</td>
                     </tr>
                 }
             </tbody>

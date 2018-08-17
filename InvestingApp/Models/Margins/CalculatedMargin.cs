@@ -12,15 +12,17 @@ namespace InvestingApp.Models.Margins
             get
             {
                 var ms = new List<MarginRow>();
-                for (var i = 90; i >= 50; i -= 5)
+                for (var i = 80; i >= 50; i -= 5)
                 {
                     var am = Math.Floor((i * Money / 100) / InitialMargin);
                     var m = Math.Round(am * InitialMargin, 2);
+                    var r = Math.Round(Money - m, 2);
                     ms.Add(new MarginRow() {
                         Amount = am,
                         Money = m,
                         Percent = i,
-                        Residue = Math.Round(Money - m, 2)
+                        Residue = r,
+                        ResiduePerItem = am != 0 ? Math.Round( r / am, 2) : 0
                     });
                 }
                 return ms.ToArray();

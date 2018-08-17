@@ -55,7 +55,7 @@ namespace InvestingApp.Controllers
                             attrsDict.Clear();
                             foreach (XmlAttribute attr in item.Attributes)
                                 attrsDict.Add(attr.Name, attr.Value);
-                            if (attrsDict.Values.Any(o => o.ToLower() == calcRequest.Instrument.ToLower()))
+                            if ((attrsDict["code"].ToLower() == calcRequest.Instrument.ToLower()) || (attrsDict["symbol"].ToLower() == calcRequest.Instrument.ToLower()))
                             {
                                 result.Money = calcRequest.Money;
                                 result.InstrumentName = attrsDict["symbol"];

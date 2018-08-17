@@ -11,5 +11,6 @@ namespace InvestingApp.Models.Margins
         public double Money { get; set; }
         public double Amount { get; set; }
         public double Residue { get; set; }
+        public double ResiduePerItem { get; set; }
     }
 }
