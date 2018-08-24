@@ -191,7 +191,7 @@
 <br />
 <div class="row">
     <div class="panel panel-warning index-panel">
-        <div class="panel-heading">Cash flows</div>
+        <div class="panel-heading">Investment payments</div>
         <div class="panel-body">
             <table class="table">
                 <thead>
@@ -202,20 +202,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var flow in Model.Flows)
+                    @foreach (var flow in Model.Flows.Where(o => o.Payment > 0))
                     {
-                        if (flow.Payment > 0)
-                        {
-                            @: <tr class="success">
-                        }
-                        else
-                        {
-                            @:<tr class="danger">
-                        }
+                        <tr class="success">
                         <td>@flow.DateTimeStamp.ToString("MMM d yyyy", CultureInfo.InvariantCulture)</td>
                         <td><b>@flow.Payment RUB </b></td>
-                                    <td>@flow.Description</td>
-                                    @: </tr>
+                        <td>@flow.Description</td>
+                        </tr>
                     }
                 </tbody>
             </table>
