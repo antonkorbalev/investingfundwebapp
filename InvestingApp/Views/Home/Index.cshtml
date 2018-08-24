@@ -190,6 +190,40 @@
 </div>
 <br />
 <div class="row">
+    <div class="panel panel-warning index-panel">
+        <div class="panel-heading">Cash flows</div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Payment</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var flow in Model.Flows)
+                    {
+                        if (flow.Payment > 0)
+                        {
+                            @: <tr class="success">
+                        }
+                        else
+                        {
+                            @:<tr class="danger">
+                        }
+                        <td>@flow.DateTimeStamp.ToString("MMM d yyyy", CultureInfo.InvariantCulture)</td>
+                        <td><b>@flow.Payment RUB </b></td>
+                                    <td>@flow.Description</td>
+                                    @: </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
     <div class="panel panel-primary index-panel">
         <div class="panel-heading">About</div>
         <div class="container">
