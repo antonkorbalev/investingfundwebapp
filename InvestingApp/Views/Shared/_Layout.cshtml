@@ -5,7 +5,7 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120472863-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
         gtag('config', 'UA-120472863-1');
     </script>
@@ -17,6 +17,7 @@
     <script src='https://www.google.com/recaptcha/api.js'></script>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/site")
 </head>
 <body>
     <div class="navbar navbar-default navbar-fixed-top">

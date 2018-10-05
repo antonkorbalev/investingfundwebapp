@@ -57,6 +57,11 @@
 
         chart.draw(data, options);
     }
+
+    function getCmlProfitTooltip(desc, profitPercent) {
+        return '<div class="graph-tooltip"><div><strong>' + desc + '</strong></div><div> Cml. mean profit: <strong>' + profitPercent + '</strong>&nbsp;%</div></div>'
+    }
+
     function drawProfitsChart() {
         @{
             var pxs = MVCStringsHelper.GetMVCString(Model.ProfitsPerMonth.Select(o => o.Description));
@@ -71,20 +76,20 @@
 
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Month');
-        data.addColumn('number', 'Profit, RUB');
         data.addColumn('number', 'Profit, %');
+        data.addColumn({ type: 'string', role: 'tooltip', 'p': { 'html': true } });
         data.addColumn('number', 'Cml. mean profit % per month (all history)');
+        data.addColumn({ type: 'string', role: 'tooltip', 'p': { 'html': true } });
 
         for (i = 0; i < xs.length; i++) {
-            data.addRow([xs[i].toString(), y1s[i], y2s[i], y3s[i]]);
+            data.addRow([xs[i].toString(), y2s[i], getProfitsToolTip(xs[i], y1s[i], y2s[i]), y3s[i], getCmlProfitTooltip(xs[i], y3s[i])]);
         }
         var options = {
+            tooltip: { isHtml: true },
             title: 'Profits per month',
             legend: { position: 'bottom' },
-            vAxes: {0: {
-                format:'# RUB'
-            },
-                1: {
+            vAxes: {
+                0: {
                     gridlines: {color: 'transparent'},
                     format:'# \'%\''
                 },
@@ -92,9 +97,7 @@
             curveType: 'function',
             seriesType: 'bars',
             series: {
-                0: { targetAxisIndex: 0 },
-                1: { targetAxisIndex: 1 },
-                2: { type: 'line', targetAxisIndex: 1 }
+                1: { type: 'line' }
             },
         };
 

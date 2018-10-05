@@ -30,3 +30,8 @@ textarea {
 .form-alert-container {
     width: 300px;
 }
+
+.graph-tooltip {
+    padding: 10px;
+    font-size: 10pt;
+}
