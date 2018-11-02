@@ -91,7 +91,7 @@ namespace InvestingApp.Helpers
                 returns.Add(totalDayPercent - riskFreeDayPercent);
             }
 
-            var average = returns.Average();
+            var average = returns.Any() ? returns.Average() : 0;
             var sumOfSquares = returns.Sum(o => (o - average) * (o - average));
             double sd = Math.Sqrt(sumOfSquares / (returns.Count() - 1));
             return Math.Round(average / sd, 2);
