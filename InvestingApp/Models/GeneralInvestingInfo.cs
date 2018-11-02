@@ -158,6 +158,8 @@ namespace InvestingApp.Models
         {
             get
             {
+                if (Profits.Count <= 1)
+                    return 0;
                 return
                     (from d in Profits.Skip(1)
                     let prevs = Profits.TakeWhile(o => o.Key != d.Key)
