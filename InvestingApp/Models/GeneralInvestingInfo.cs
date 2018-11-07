@@ -104,7 +104,7 @@ namespace InvestingApp.Models
         {
             get
             {
-                return Profits.Values.Last();
+                return Math.Round(Profits.Values.Last(), 2);
             }
         }
 
@@ -160,11 +160,11 @@ namespace InvestingApp.Models
             {
                 if (Profits.Count <= 1)
                     return 0;
-                return
-                    (from d in Profits.Skip(1)
+                var value = (from d in Profits.Skip(1)
                     let prevs = Profits.TakeWhile(o => o.Key != d.Key)
                     let max =  prevs.Max(o => o.Value)
                     select (max - d.Value)).Max();
+                return Math.Round(value, 2);
             }
         }
 

@@ -81,11 +81,11 @@ namespace ModuleTests
         public void CheckGeneralProfit()
         {
             var data = getInvestingInfo();
-            Assert.AreEqual(data.Profit, 15);
-            Assert.AreEqual(data.ProfitPercent, 100);
+            Assert.AreEqual(data.Profit, 12);
+            Assert.AreEqual(data.ProfitPercent, 80);
             Assert.AreEqual(data.Max, 27);
             Assert.AreEqual(data.Min, -7);
-            Assert.AreEqual(data.DrawDown, 9);    
+            Assert.AreEqual(data.DrawDown, 12);    
         }
 
         [TestMethod]
