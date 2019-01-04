@@ -153,9 +153,11 @@ namespace InvestingApp.Helpers
                     var daysDiff = (d - firstDate).TotalDays < DateTime.DaysInMonth(d.Year, d.Month) ?
                         (d - firstDate).TotalDays : DateTime.DaysInMonth(d.Year, d.Month);
 
-                    var periodStartDate = data.First(o => o.DateTimeStamp.Month == prevDate.Month && o.DateTimeStamp.Year == prevDate.Year).DateTimeStamp;
+                   var periodStartDate = data
+                        .First(o => o.DateTimeStamp.Month == d.Month && o.DateTimeStamp.Year == d.Year)
+                        .DateTimeStamp;
 
-                    bal += (bal - flows.Where(o => o.Payment > 0 && o.DateTimeStamp >= periodStartDate && o.DateTimeStamp < d).Sum(o => o.Payment))
+                   bal += (bal - flows.Where(o => o.Payment > 0 && o.DateTimeStamp >= periodStartDate && o.DateTimeStamp < d).Sum(o => o.Payment))
                         * daysDiff * 0.01 * (riskFreeRate) / (365 + (DateTime.IsLeapYear(d.Year) ? 1 : 0));
                 }
                 savings.Add(bal);

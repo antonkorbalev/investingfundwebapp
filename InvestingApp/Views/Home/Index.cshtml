@@ -45,9 +45,9 @@
             hAxis:  { showTextEvery: @Model.GetHAxisTicksCount() },
             vAxes:  {
                 0: {
-                    scaleType: 'log',
-                    format:'# RUB',
-                    ticks: @Model.GetVAxisTicks()
+                    scaleType: 'linear', //'log',
+                    format: '# RUB',
+                    //ticks: @Model.GetVAxisTicks()
                     },
             },
 
