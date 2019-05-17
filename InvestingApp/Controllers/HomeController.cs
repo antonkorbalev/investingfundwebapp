@@ -15,9 +15,9 @@ namespace InvestingApp.Controllers
         {
             using (var context = new InvestingContext())
             {
-                var data = context.Balances.ToArray();
-                var flows = context.Flows.ToArray();
-                var ratesUSD = context.Rates.Where(o => o.Type == RateType.USDollar).ToArray();
+                var data = context.Balances.OrderBy(o => o.Id).ToArray();
+                var flows = context.Flows.OrderBy(o => o.Id).ToArray();
+                var ratesUSD = context.Rates.Where(o => o.Type == RateType.USDollar).OrderBy(o => o.Id).ToArray();
                 return new GeneralInvestingInfo(data, flows, ratesUSD);       
             }
         }

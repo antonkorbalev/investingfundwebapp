@@ -103,7 +103,7 @@ namespace InvestingApp.Controllers
                     Logout();
 
                 accountInfo = new AccountData(user, 
-                    context.Balances, 
+                    context.Balances.OrderBy(o => o.Id), 
                     context.Flows.Include(o => o.User));
 
                 return View(accountInfo);
